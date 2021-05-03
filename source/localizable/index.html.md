@@ -1,13 +1,14 @@
 ---
-title: API Reference
+title: "t(:title)"
 
 language_tabs: # must be one of https://git.io/vQNgJ
-  - shell
-  - ruby
-  - python
-  - javascript
+  - shell: cURL
+  - ruby: Ruby
+  - python: Python
+  - javascript: JavaScript
 
 toc_footers:
+  - t(:title)
   - <a href='#'>Sign Up for a Developer Key</a>
   - <a href='https://github.com/slatedocs/slate'>Documentation Powered by Slate</a>
 
