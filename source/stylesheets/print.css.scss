@@ -19,7 +19,7 @@ License for the specific language governing permissions and limitations
 under the License.
 */
 
-$print-color: #999;
+$print-color: #ccc;
 $print-color-light: #ccc;
 $print-font-size: 12px;
 
@@ -87,8 +87,6 @@ body {
     padding-bottom: 0.5em;
     margin-top: 1em;
     margin-bottom: $h1-margin-bottom;
-    border: 2px solid $print-color-light;
-    border-width: 2px 0;
     text-align: center;
   }
 
@@ -96,7 +94,6 @@ body {
     @extend %header-font;
     font-size: 1.8em;
     margin-top: 2em;
-    border-top: 2px solid $print-color-light;
     padding-top: 0.8em;
   }
 

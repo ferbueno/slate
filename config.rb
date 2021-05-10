@@ -55,7 +55,7 @@ configure :build do
 end
 
 # Activate internationalization
-activate :i18n, :langs => [:es, :en], :mount_at_root => :es
+activate :i18n, langs: %i[es en], mount_at_root: :en
 
 # Deploy Configuration
 # If you want Middleman to listen on a different port, you can set that below

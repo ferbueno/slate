@@ -20,16 +20,29 @@ under the License.
 ////////////////////////////////////////////////////////////////////////////////
 // Use these settings to help adjust the appearance of Slate
 
+// COLORS
+////////////////////
+$black: #000;
+$white: #fff;
+$primary-color: #1890ff !default;
+$text-color: rgba($black, 0.85) !default;
+$success-color: #52c41a !default;
+$warning-color: #faad14 !default;
+
+// BORDERS
+///////////////////
+$border-radius: 2px;
+
 
 // BACKGROUND COLORS
 ////////////////////
-$nav-bg: #2E3336 !default;
+$nav-bg: $white !default;
 $examples-bg: #2E3336 !default;
 $code-bg: #1E2224 !default;
 $code-annotation-bg: #191D1F !default;
-$nav-subitem-bg: #1E2224 !default;
-$nav-active-bg: #0F75D4 !default;
-$nav-active-parent-bg: #1E2224 !default; // parent links of the current section
+$nav-subitem-bg: rgb(250, 250, 250) !default;
+$nav-active-bg: #e6f7ff !default;
+$nav-active-parent-bg: #e6f7ff !default; // parent links of the current section
 $lang-select-border: #000 !default;
 $lang-select-bg: #1E2224 !default;
 $lang-select-active-bg: $examples-bg !default; // feel free to change this to blue or something
@@ -44,9 +57,9 @@ $search-notice-bg: #c97a7e !default;
 // TEXT COLORS
 ////////////////////
 $main-text: #333 !default; // main content text color
-$nav-text: #fff !default;
-$nav-active-text: #fff !default;
-$nav-active-parent-text: #fff !default; // parent links of the current section
+$nav-text: rgba($black, 0.65) !default;
+$nav-active-text: rgba($black, 0.85) !default;
+$nav-active-parent-text: rgba($black, 0.85) !default; // parent links of the current section
 $lang-select-text: #fff !default; // color of unselected language tab text
 $lang-select-active-text: #fff !default; // color of selected language tab text
 $lang-select-pressed-text: #fff !default; // color of language tab text when mouse is pressed
@@ -54,11 +67,11 @@ $lang-select-pressed-text: #fff !default; // color of language tab text when mou
 
 // SIZES
 ////////////////////
-$nav-width: 230px !default; // width of the navbar
-$examples-width: 50% !default; // portion of the screen taken up by code examples
+$nav-width: 240px !default; // width of the navbar
+$examples-width: 40% !default; // portion of the screen taken up by code examples
 $logo-margin: 0px !default; // margin below logo
 $main-padding: 28px !default; // padding to left and right of content & examples
-$nav-padding: 15px !default; // padding to left and right of navbar
+$nav-padding: 16px !default; // padding to left and right of navbar
 $nav-v-padding: 10px !default; // padding used vertically around search boxes and results
 $nav-indent: 10px !default; // extra padding for ToC subitems
 $code-annotation-padding: 13px !default; // padding inside code annotations
@@ -66,11 +79,24 @@ $h1-margin-bottom: 21px !default; // padding under the largest header tags
 $tablet-width: 930px !default; // min width before reverting to tablet size
 $phone-width: $tablet-width - $nav-width !default; // min width before reverting to mobile size
 
+// BORDER RADIUS
+$default-border-radius: 4px !default;
+
+// ALERTS
+$alert-success-bg-color: #f6ffed !default;
+$alert-success-border: 1px solid #b7eb8f !default;
+$alert-info-bg-color: #e6f7ff !default;
+$alert-info-border: 1px solid #91d5ff !default;
+$alert-warning-bg-color: #fffbe6 !default;
+$alert-warning-border: 1px solid #ffe58f !default;
+$alert-error-bg-color: #fff2f0 !default;
+$alert-error-border: 1px solid #ffccc7 !default;
+
 
 // FONTS
 ////////////////////
 %default-font {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+  font-family: 'Open Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
   font-size: 14px;
 }
 

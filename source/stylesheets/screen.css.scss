@@ -24,6 +24,12 @@ under the License.
 // GENERAL STUFF
 ////////////////////////////////////////////////////////////////////////////////
 
+@import url("https://fonts.googleapis.com/css?family=Open+Sans");html {
+  font-family: sans-serif;
+  -ms-text-size-adjust: 100%;
+  -webkit-text-size-adjust: 100%
+}
+
 html, body {
   color: $main-text;
   padding: 0;
@@ -82,24 +88,29 @@ html, body {
     position: relative;
 
     input {
-      background: $nav-bg;
-      border-width: 0 0 1px 0;
-      border-color: $search-box-border-color;
-      padding: 6px 0 6px 20px;
+      background-color: #fff;
+      background-image: none;
+      border: 1px solid #d9d9d9;
+      border-radius: $border-radius;
       box-sizing: border-box;
-      margin: $nav-v-padding $nav-padding;
+      color: $text-color;
+      display: inline-block;
+      font-feature-settings: "tnum";
+      font-variant: tabular-nums;
+      list-style: none;
+      margin: 0;
+      min-width: 0;
+      padding: 4px 11px;
+      position: relative;
+      transition: all .3s;
       width: $nav-width - ($nav-padding*2);
-      outline: none;
-      color: $nav-text;
-      border-radius: 0; /* ios has a default border radius */
-    }
-
-    &:before {
-      position: absolute;
-      top: 17px;
-      left: $nav-padding;
-      color: $nav-text;
-      @extend %icon-search;
+      margin: $nav-v-padding $nav-padding;
+      &:active, &:focus {
+        border-color: #40a9ff;
+        border-right-width: 1px!important;
+        box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.2);
+        outline: 0;
+      }
     }
   }
 
@@ -151,10 +162,29 @@ html, body {
     transition-duration: 200ms;
   }
 
+  .toc-link {
+    position: relative;
+    &::after {
+      border-right: 4px solid #1890ff;
+      bottom: 0;
+      content: "";
+      opacity: 0;
+      position: absolute;
+      right: 0;
+      top: 0;
+      transform: scaleY(.0001);
+      transition: transform .15s cubic-bezier(.215,.61,.355,1),opacity .15s cubic-bezier(.215,.61,.355,1);
+    }
+  }
+
   // This is the currently selected ToC entry
   .toc-link.active {
     background-color: $nav-active-bg;
     color: $nav-active-text;
+    &::after {
+      opacity: 1;
+      transform: scaleY(1);
+    }
   }
 
   // this is parent links of the currently selected ToC entry
@@ -197,7 +227,7 @@ html, body {
 }
 
 .toc-link, .toc-footer li {
-  padding: 0 $nav-padding 0 $nav-padding;
+  padding: 8px $nav-padding;
   display: block;
   overflow-x: hidden;
   white-space: nowrap;
@@ -283,13 +313,16 @@ html, body {
   width: 100%;
   font-weight: bold;
   overflow-x: auto;
+  padding: 8px;
   a {
     display: inline;
     color: $lang-select-text;
     text-decoration: none;
-    padding: 0 10px;
+    padding: 8px 32px;
+    margin: 0 8px;
     line-height: 30px;
     outline: 0;
+    border-radius: $default-border-radius;
 
     &:active, &:focus {
       background-color: $lang-select-pressed-bg;
@@ -327,8 +360,18 @@ html, body {
     clear: both;
   }
 
-  &>h1, &>h2, &>h3, &>h4, &>h5, &>h6, &>p, &>table, &>ul, &>ol, &>aside, &>dl {
+  &>h1, &>h2, &>h3, &>h4, &>h5, &>h6, &>p, &>table, &>ul, &>ol, &>dl {
     margin-right: $examples-width;
+    padding: 0 $main-padding;
+    box-sizing: border-box;
+    display: block;
+
+    @extend %left-col;
+  }
+
+  &>aside {
+    margin-right: calc(#{$examples-width} + 32px);
+    margin-left: 16px;
     padding: 0 $main-padding;
     box-sizing: border-box;
     display: block;
@@ -352,9 +395,6 @@ html, body {
     padding-bottom: 0.5em;
     margin-bottom: $h1-margin-bottom;
     margin-top: 2em;
-    border-top: 1px solid #ccc;
-    border-bottom: 1px solid #ccc;
-    background-color: #fdfdfd;
   }
 
   h1:first-child, div:first-child + h1 {
@@ -467,16 +507,20 @@ html, body {
     padding-bottom: 1em;
     margin-top: 1.5em;
     margin-bottom: 1.5em;
-    background: $aside-notice-bg;
+    background: $alert-info-bg-color;
+    border: $alert-info-border;
     line-height: 1.6;
 
     &.warning {
-      background-color: $aside-warning-bg;
+      background-color: $alert-warning-bg-color;
+      border: $alert-warning-border;
     }
 
     &.success {
-      background-color: $aside-success-bg;
+      background-color: $alert-success-bg-color;
+      border: $alert-success-border;
     }
+
   }
 
   aside:before {
@@ -487,14 +531,17 @@ html, body {
 
   aside.notice:before {
     @extend %icon-info-sign;
+    color: $primary-color;
   }
 
   aside.warning:before {
     @extend %icon-exclamation-sign;
+    color: $warning-color;
   }
 
   aside.success:before {
     @extend %icon-ok-sign;
+    color: $success-color;
   }
 
   .search-highlight {
@@ -527,6 +574,7 @@ html, body {
     clear:right;
 
     box-sizing: border-box;
+    border-radius: 4px;
 
     @extend %right-col;
 
@@ -544,6 +592,8 @@ html, body {
     padding-top: 2em;
     padding-bottom: 2em;
     padding: 2em $main-padding;
+    background-color: $code-annotation-bg;
+    border-radius: $default-border-radius;
   }
 
   blockquote {
