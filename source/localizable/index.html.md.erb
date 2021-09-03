@@ -1,5 +1,5 @@
 ---
-title: "t(:title)"
+title: Factoro API
 
 language_tabs: # must be one of https://git.io/vQNgJ
   - shell: cURL
@@ -43,8 +43,8 @@ api = kittn.authorize('meowmeowmeow')
 
 ```shell
 # With shell, you can just pass the correct header with each request
-curl "api_endpoint_here" \
-  -H "Authorization: meowmeowmeow"
+curl "<%= config[:url] %>/v1" \
+  -H "Authorization: Bearer ${token}"
 ```
 
 ```javascript
@@ -53,21 +53,46 @@ const kittn = require('kittn');
 let api = kittn.authorize('meowmeowmeow');
 ```
 
-> Make sure to replace `meowmeowmeow` with your API key.
+> Make sure to replace `token` with your API key.
 
-Kittn uses API keys to allow access to the API. You can register a new Kittn API key at our [developer portal](http://example.com/developers).
+Factoro uses API keys to allow access to the API. As an administrator, you can get your API key in your [settings page](https://app.factoro.mx/bank/settings).
 
-Kittn expects for the API key to be included in all API requests to the server in a header that looks like the following:
-
-`Authorization: meowmeowmeow`
+`Authorization: Bearer ${token}
 
 <aside class="notice">
-You must replace <code>meowmeowmeow</code> with your personal API key.
+You must replace <code>${token}</code> with your personal API key.
 </aside>
 
-# Kittens
+# Verification
 
-## Get All Kittens
+## Verify that your integration and API key is working
+
+```shell
+curl "<%= config[:url] %>/v1/shared/authentication/hello" \
+  -H "Authorization: ${token}"
+```
+
+> Response:
+
+```json
+{
+ message: "Hello Factoro",
+ time: "2021-08-26T12:00:00",
+}
+```
+
+This endpoint helps the user verify that the integration is correctly implemented. 
+By calling this endpoint, you will have tested that your service is correctly attaching the API key
+and calling our server.
+
+### HTTP Request
+
+<span class="tag green">GET</span>
+`<%= config[:url] %>/v1/shared/authentication/hello`
+
+# Credit Lines
+
+## Get all Credit Lines
 
 ```ruby
 require 'kittn'
@@ -84,8 +109,8 @@ api.kittens.get()
 ```
 
 ```shell
-curl "http://example.com/api/kittens" \
-  -H "Authorization: meowmeowmeow"
+curl "<%= config[:url] %>/v1/financial_institutions/credit_lines" \
+  -H "Authorization: ${token}"
 ```
 
 ```javascript
@@ -95,45 +120,82 @@ let api = kittn.authorize('meowmeowmeow');
 let kittens = api.kittens.get();
 ```
 
-> The above command returns JSON structured like this:
+> Response:
 
 ```json
 [
   {
     "id": 1,
-    "name": "Fluffums",
-    "breed": "calico",
-    "fluffiness": 6,
-    "cuteness": 7
+    "company": {
+      "name": "Company Name",
+      "alias": "Alias",
+      "tax_id": "Tax ID",
+      "factoring_id": "ID123",
+    },
+    "payment_term": 1,
+    "credit_limit": 1000000,
+    "ordinary_interest_rate": 1.4,
+    "moratorium_interest_factor": 1.1,
+    "moratorium_interest_rate": 4.5,
+    "first_order_rebate": 0,
+    "balance": 0,
+    "start_date": "2021-04-01T12:00:00",
+    "end_date": "2022-04-01T12:00:00",
+    "discarded_at": null,
+    "min_term": 1,
+    "max_term": 100,
+    "min_total": 1,
+    "max_total": 1000000,
+    "token_sent_to": "example@mail.com"
   },
   {
     "id": 2,
-    "name": "Max",
-    "breed": "unknown",
-    "fluffiness": 5,
-    "cuteness": 10
+    "company": {
+      "name": "Company Name",
+      "alias": "Alias",
+      "tax_id": "Tax ID",
+      "factoring_id": "ID123",
+    },
+    "payment_term": 1,
+    "credit_limit": 1000000,
+    "ordinary_interest_rate": 1.4,
+    "moratorium_interest_factor": 1.1,
+    "moratorium_interest_rate": 4.5,
+    "first_order_rebate": 0,
+    "balance": 0,
+    "start_date": "2021-04-01T12:00:00",
+    "end_date": "2022-04-01T12:00:00",
+    "discarded_at": null,
+    "min_term": 1,
+    "max_term": 100,
+    "min_total": 1,
+    "max_total": 1000000,
+    "token_sent_to": "example@mail.com"
   }
 ]
 ```
 
-This endpoint retrieves all kittens.
+This endpoint gets all credit lines
 
 ### HTTP Request
 
-`GET http://example.com/api/kittens`
+<span class="tag green">GET</span>
+`<%= config[:url] %>/v1/financial_institutions/credit_lines`
 
 ### Query Parameters
 
-Parameter | Default | Description
---------- | ------- | -----------
-include_cats | false | If set to true, the result will also include cats.
-available | true | If set to false, the result will include kittens that have already been adopted.
+Parameter | Type | Default | Description
+--------- | -----| ------- | -----------
+page | Integer | 1 | The page number for result retrieval
+sort_field | String | date | The field to which sort the credit lines
+sort_order | String | desc | The order in which the credit lines are shown
+company | String | null | The name or alias of a specific company to filter credit lines
+limit | Integer | 20 | The amount of credit lines to show per page
+start_date | Date | null | The start date to filter
+end_date | Date | null | The end date to filter
+currency_id | Integer | null | The ID of the currency to filter by currency
 
-<aside class="success">
-Remember — a happy kitten is an authenticated kitten!
-</aside>
-
-## Get a Specific Kitten
+## Get a specific credit line
 
 ```ruby
 require 'kittn'
@@ -150,8 +212,8 @@ api.kittens.get(2)
 ```
 
 ```shell
-curl "http://example.com/api/kittens/2" \
-  -H "Authorization: meowmeowmeow"
+curl "<%= config[:url] %>/v1/financial_institutions/credit_lines/76" \
+  -H "Authorization: ${token}"
 ```
 
 ```javascript
@@ -165,75 +227,148 @@ let max = api.kittens.get(2);
 
 ```json
 {
-  "id": 2,
-  "name": "Max",
-  "breed": "unknown",
-  "fluffiness": 5,
-  "cuteness": 10
+  "id": 76,
+  "company": {
+    "name": "Company Name",
+    "alias": "Alias",
+    "tax_id": "Tax ID",
+    "factoring_id": "ID123",
+  },
+  "payment_term": 1,
+  "credit_limit": 1000000,
+  "ordinary_interest_rate": 1.4,
+  "moratorium_interest_factor": 1.1,
+  "moratorium_interest_rate": 4.5,
+  "first_order_rebate": 0,
+  "balance": 0,
+  "start_date": "2021-04-01T12:00:00",
+  "end_date": "2022-04-01T12:00:00",
+  "discarded_at": null,
+  "min_term": 1,
+  "max_term": 100,
+  "min_total": 1,
+  "max_total": 1000000,
+  "token_sent_to": "example@mail.com"
 }
 ```
 
-This endpoint retrieves a specific kitten.
-
-<aside class="warning">Inside HTML code blocks like this one, you can't use Markdown, so use <code>&lt;code&gt;</code> blocks to denote code.</aside>
+This endpoint retrieves a specific credit line
 
 ### HTTP Request
-
-`GET http://example.com/kittens/<ID>`
+<span class="tag green">GET</span>
+`<%= config[:url] %>/v1/financial_institutions/credit_lines/${id}`
 
 ### URL Parameters
 
 Parameter | Description
 --------- | -----------
-ID | The ID of the kitten to retrieve
+id | The ID of the credit line to retrieve
 
-## Delete a Specific Kitten
+# Documents
 
-```ruby
-require 'kittn'
-
-api = Kittn::APIClient.authorize!('meowmeowmeow')
-api.kittens.delete(2)
-```
-
-```python
-import kittn
-
-api = kittn.authorize('meowmeowmeow')
-api.kittens.delete(2)
-```
+## Authorize documents for early payment
 
 ```shell
-curl "http://example.com/api/kittens/2" \
-  -X DELETE \
-  -H "Authorization: meowmeowmeow"
+curl -X POST "<%= config[:url] %>/v1/financial_institutions/documents" \
+  -H "Authorization: ${token}" \ 
+  -H "Content-Type: application/json" \
+  -d '{ "documents": [1,2,3] }'
 ```
 
-```javascript
-const kittn = require('kittn');
-
-let api = kittn.authorize('meowmeowmeow');
-let max = api.kittens.delete(2);
-```
-
-> The above command returns JSON structured like this:
+> JSON response:
 
 ```json
-{
-  "id": 2,
-  "deleted" : ":("
-}
+[
+  {
+    "id": 1,
+    "emitter": {
+      id: 456,
+      name: "Emitter Name"
+    },
+    "receiver": {
+      id: 789,
+      name: "Receiver Name",
+    },
+    "currency": {
+      id: 1,
+      code: "MXN",
+    },
+    "factoring_id": "FAC123456",
+    "uuid": "21295371-177e-41f0-9c5c-c3c87eb71a13",
+    "due_date": "2021-09-30T11:59:59",
+    "total": 10000,
+    "discount": 100,
+    "result": "success",
+    "message": null,
+  },
+  {
+    "id": 2,
+    "emitter": {
+      id: 456,
+      name: "Emitter Name"
+    },
+    "receiver": {
+      id: 789,
+      name: "Receiver Name",
+    },
+    "currency": {
+      id: 1,
+      code: "MXN",
+    },
+    "factoring_id": "FAC989234",
+    "uuid": "a757d971-ddc2-4a7f-be16-47728e96090b",
+    "due_date": "2021-09-10T11:59:59",
+    "total": 10000,
+    "discount": 100,
+    "result": "warning",
+    "message": "Fecha de vencimiento documento demasiado próxima",
+  },
+  {
+    "id": 3,
+    "emitter": {
+      id: 456,
+      name: "Emitter Name"
+    },
+    "receiver": {
+      id: 789,
+      name: "Receiver Name",
+    },
+    "currency": {
+      id: 1,
+      code: "MXN",
+    },
+    "factoring_id": "FAC989234",
+    "uuid": "324604bc-466d-4620-8b8b-b8eadb031390",
+    "due_date": "2021-09-10T11:59:59",
+    "total": 10000,
+    "discount": 100,
+    "result": "error",
+    "message": "Fondos insuficientes",
+  },
+]
 ```
 
-This endpoint deletes a specific kitten.
+This endpoint approves the specified documents for early payment.
+Those documents should be in the `requested` status.
 
 ### HTTP Request
+<span class="tag blue">POST</span>
+`<%= config[:url] %>/v1/financial_institutions/documents`
 
-`DELETE http://example.com/kittens/<ID>`
+Each document will be returned with its respective status depending on the
+outcome of the operation.
 
-### URL Parameters
+### Parameters
 
-Parameter | Description
---------- | -----------
-ID | The ID of the kitten to delete
+Parameter | Type | Description
+--------- | ---- | -----------
+documents | Array[Integer] | The array of document id's to approve
 
+### Response
+
+### Statuses 
+Status | Description
+------ | -----------
+<span class="tag green">success</span> | The document was processed successfully
+<span class="tag gold">warning</span> | The document was processed successfully, but there is something that may seem like an error in the future
+<span class="tag red">error</span> | The document was not processed successfully
