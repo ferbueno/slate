@@ -11,16 +11,12 @@ jobs:
     steps:
       # Check out repo
       - checkout
-      # Print the branch
-      - run:
-          name: Show current branch
-          command: echo ${CIRCLE_BRANCH}
       # Set up docker
-      - setup_remote_docker:
-          version: 20.10.7
-          docker_layer_caching: true
+      - setup_remote_docker
       # Build the docs
-      - run: docker run --rm --name slate -v $(pwd)/build:/srv/slate/build -v $(pwd)/source:/srv/slate/source slatedocs/slate
+      - run:
+          name: Build the docs
+          command: docker run --rm --name slate -v $(pwd)/build:/srv/slate/build -v $(pwd)/source:/srv/slate/source slatedocs/slate
       # Store the build
       - persist_to_workspace:
           root: ~/repo
