@@ -239,6 +239,8 @@ curl -X POST "<%= config[:url] %>/v1/financial_institutions/credit_lines" \
       "max_term": 100,
       "min_total": 1,
       "max_total": 1000000,
+      "contract_id": 134,
+      "currency": 1,
   }'
 ```
 
@@ -251,7 +253,12 @@ curl -X POST "<%= config[:url] %>/v1/financial_institutions/credit_lines" \
     "name": "Company Name",
     "alias": "Alias",
     "tax_id": "Tax ID",
-    "factoring_id": "ID123",
+    "factoring_id": "ID123"
+  },
+  "currency": {
+    "id": 1,
+    "code": "MXN",
+    "description": "Pedo Mexicano"
   },
   "credit_limit": 1000000,
   "ordinary_interest_rate": 1.4,
@@ -294,6 +301,22 @@ min_total | Float | `true` | The minimum total which documents must comply to be
 max_total | Float | `true` | The maximum total which documents must comply to be requested and financed
 
 # Contracts
+
+## Create contract
+
+```shell
+curl -X POST "<%= config[:url] %>/v1/shared/contracts/supply_chain_finance/incorporation" \
+  -H "Authorization: ${token}" \
+  -H "Content-Type: application/json" \
+  -F /path/to/file
+```
+
+### HTTP Request
+<span class="tag blue">POST</span>
+`<%= config[:url] %>/v1/shared/contracts/supply_chain_finance/incorporation`
+
+### Response
+Returns a <a class="link" href="#contract">Contract</a> instance
 
 # Currencies
 
@@ -697,6 +720,28 @@ max_term | Integer | The maximum accepted remaining term for a document to be re
 min_total | Float | The minimum accepted total for a document to be requested
 max_total | Float | The maximum accepted total for a document to be requested
 token_sent_to | String | The email to where the invitation token was sent
+
+## Contract
+
+> JSON:
+
+```json
+{
+  "id": 1,
+  "is_signed": true,
+  "category": "supply_chain_finance",
+  "contract_type": "incorporation",
+  "name": "Contract Name",
+}
+```
+
+Parameter | Type | Description
+--------- | ---- | -----------
+id | Integer | The id of the record
+is_signed | Boolean | If the contract has been signed or not
+category | String | The contract category
+contract_type | String | The contract type
+name | String | The contract's file name
 
 ## Statuses
 
