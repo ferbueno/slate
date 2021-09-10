@@ -18,6 +18,7 @@ jobs:
       # Set up docker
       - setup_remote_docker:
           version: 20.10.7
+          docker_layer_caching: true
       # Build the docs
       - run: docker run --rm --name slate -v $(pwd)/build:/srv/slate/build -v $(pwd)/source:/srv/slate/source slatedocs/slate
       # Store the build
