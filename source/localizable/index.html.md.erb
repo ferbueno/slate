@@ -3,13 +3,6 @@ title: Factoro API
 
 language_tabs: # must be one of https://git.io/vQNgJ
   - shell: cURL
-  - ruby: Ruby
-  - python: Python
-  - javascript: JavaScript
-
-toc_footers:
-  - <a href='#'>Sign Up for a Developer Key</a>
-  - <a href='https://github.com/slatedocs/slate'>Documentation Powered by Slate</a>
 
 includes:
   - errors
@@ -25,21 +18,22 @@ Welcome to the Factoro API  documentation. You can use our API to access our end
 
 We have language bindings in Shell, Ruby, Python, and JavaScript! You can view code examples in the dark area to the right, and you can switch the programming language of the examples with the tabs in the top right.
 
+# About this API
+
+There are some thing you should know about Factoro's API.
+
+All operations are calculated with a precision of 6 decimals, and transformed into a `Float` when the information leaves the server.
+Due to the fallbacks of using `Float`, Factoro calculates operations using Big Decimal, to ensure idempotence and precision.
+
+Some actions of this API trigger notifications. This means that some (or all) of the related characters
+in each instruction will receive and email with the corresponding information.
+Each action that does, will have it in the description.
+
+We broke down information result into Models, to maintain a simpler and cleaner looking documentation. You can see our models <a class="link" href="#models">here</a>.
+
 # Authentication
 
 > To authorize, use this code:
-
-```ruby
-require 'kittn'
-
-api = Kittn::APIClient.authorize!('meowmeowmeow')
-```
-
-```python
-import kittn
-
-api = kittn.authorize('meowmeowmeow')
-```
 
 ```shell
 # With shell, you can just pass the correct header with each request
@@ -47,15 +41,10 @@ curl "<%= config[:url] %>/v1" \
   -H "Authorization: Bearer ${token}"
 ```
 
-```javascript
-const kittn = require('kittn');
-
-let api = kittn.authorize('meowmeowmeow');
-```
-
 > Make sure to replace `token` with your API key.
 
-Factoro uses API keys to allow access to the API. As an administrator, you can get your API key in your [settings page](https://app.factoro.mx/bank/settings).
+Factoro uses API keys to allow access to the API. As an administrator,
+you can get your API key in your <a href="https://app.factoro.mx/bank/settings" class="link" target="_blank">settings page</a>.
 
 `Authorization: Bearer ${token}`
 
@@ -76,12 +65,12 @@ curl "<%= config[:url] %>/v1/shared/authentication/hello" \
 
 ```json
 {
- message: "Hello Factoro",
- time: "2021-08-26T12:00:00",
+ "message": "Hello Factoro",
+ "time": "2021-08-26T12:00:00",
 }
 ```
 
-This endpoint helps the user verify that the integration is correctly implemented. 
+This endpoint helps the user verify that the integration is correctly implemented.
 By calling this endpoint, you will have tested that your service is correctly attaching the API key
 and calling our server.
 
@@ -94,30 +83,9 @@ and calling our server.
 
 ## Get all Credit Lines
 
-```ruby
-require 'kittn'
-
-api = Kittn::APIClient.authorize!('meowmeowmeow')
-api.kittens.get
-```
-
-```python
-import kittn
-
-api = kittn.authorize('meowmeowmeow')
-api.kittens.get()
-```
-
 ```shell
 curl "<%= config[:url] %>/v1/financial_institutions/credit_lines" \
   -H "Authorization: ${token}"
-```
-
-```javascript
-const kittn = require('kittn');
-
-let api = kittn.authorize('meowmeowmeow');
-let kittens = api.kittens.get();
 ```
 
 > Response:
@@ -195,32 +163,15 @@ start_date | Date | null | The start date to filter
 end_date | Date | null | The end date to filter
 currency_id | Integer | null | The ID of the currency to filter by currency
 
+### Response
+
+Returns an array of <a class="link" href="#credit-line">Credit Line</a>
+
 ## Get a specific credit line
-
-```ruby
-require 'kittn'
-
-api = Kittn::APIClient.authorize!('meowmeowmeow')
-api.kittens.get(2)
-```
-
-```python
-import kittn
-
-api = kittn.authorize('meowmeowmeow')
-api.kittens.get(2)
-```
 
 ```shell
 curl "<%= config[:url] %>/v1/financial_institutions/credit_lines/76" \
   -H "Authorization: ${token}"
-```
-
-```javascript
-const kittn = require('kittn');
-
-let api = kittn.authorize('meowmeowmeow');
-let max = api.kittens.get(2);
 ```
 
 > The above command returns JSON structured like this:
@@ -264,13 +215,158 @@ Parameter | Description
 --------- | -----------
 id | The ID of the credit line to retrieve
 
+### Response
+
+Returns an instance of <a class="link" href="#credit-line">Credit Line</a>
+
+## Create a Credit Line
+
+```shell
+curl -X POST "<%= config[:url] %>/v1/financial_institutions/credit_lines" \
+  -H "Authorization: ${token}" \
+  -H "Content-Type: application/json" \
+  -d '{
+      "name": "Empresa 1",
+      "contact_name": "Name",
+      "email": "example@email.com",
+      "credit_limit": 1000000,
+      "ordinary_interest_rate": 1.4,
+      "moratorium_interest_factor": 1.1,
+      "first_order_rebate": 0,
+      "start_date": "2021-04-01T12:00:00",
+      "end_date": "2022-04-01T12:00:00",
+      "min_term": 1,
+      "max_term": 100,
+      "min_total": 1,
+      "max_total": 1000000,
+  }'
+```
+
+> JSON response:
+
+```json
+{
+  "id": 76,
+  "company": {
+    "name": "Company Name",
+    "alias": "Alias",
+    "tax_id": "Tax ID",
+    "factoring_id": "ID123",
+  },
+  "credit_limit": 1000000,
+  "ordinary_interest_rate": 1.4,
+  "moratorium_interest_factor": 1.1,
+  "moratorium_interest_rate": 4.5,
+  "first_order_rebate": 0,
+  "balance": 0,
+  "start_date": "2021-04-01T12:00:00",
+  "end_date": "2022-04-01T12:00:00",
+  "discarded_at": null,
+  "min_term": 1,
+  "max_term": 100,
+  "min_total": 1,
+  "max_total": 1000000,
+  "token_sent_to": "example@mail.com"
+}
+```
+
+### HTTP Request
+<span class="tag blue">POST</span>
+`<%= config[:url] %>/v1/financial_institutions/credit_lines`
+
+### Parameters
+
+Parameter | Type | Required | Description
+--------- | ---- | -------- | -----------
+name | String | `true` | The name of the company to add
+contact_name | String | `true` | The name of the person to receive the invitation
+email | String | `true` | The email to where we're sending the invitation
+tax_id | String | `true` | The company tax id
+credit_limit | Float | `true` | The limit to what your client can dispose
+currency | Integer | `true` | The ID of the currency in which the credit line will be created
+contract_id | Integer | `true` | The ID of the uploaded contract
+ordinary_interest_rate | Float | `true` | The rate with which you are charging
+moratorium_interest_factor | Float | `true` | The factor with which the interest rate will be multiplied to calculate the moratorium interest rate
+first_order_rebate | Float | `false` | The rebate to add to your client
+min_term | Integer | `true` | The minimum term which documents must comply to be requested and financed
+max_term | Integer | `true` | The maximum term which documents must comply to be requested and financed
+min_total | Float | `true` | The minimum total which documents must comply to be requested and financed
+max_total | Float | `true` | The maximum total which documents must comply to be requested and financed
+
+# Contracts
+
+# Currencies
+
+## Get all currencies
+
+```shell
+  curl "<%= config[:url] %>/v1/shared/currencies" \
+  -H "Authorization: ${token}"
+```
+
+> JSON response:
+
+```json
+{
+  "common": [
+    {
+      "id": 1,
+      "code": "MXN",
+      "description": "Peso Mexicano"
+    },
+    {
+      "id": 2,
+      "code": "USD",
+      "description": "Dólar Americano"
+    },
+    ...
+  ],
+  "currencies": [
+    {
+      "id": 1,
+      "code": "MXN",
+      "description": "Peso Mexicano"
+    },
+    {
+      "id": 2,
+      "code": "USD",
+      "description": "Dólar Americano"
+    },
+    ...
+  ]
+}
+```
+
+### HTTP Request
+<span class="tag green">GET</span>
+`<%= config[:url] %>/v1/shared/currencies`
+
+### Response
+
+Parameter | Type | Description
+--------- | ---- | -----------
+common | Array[<a class="link" href="#currency">Currency</a>] | The most common used currencies
+currencies | Array[<a class="link" href="#currency">Currency</a>] | All available currencies
+
 # Documents
+
+## Get all documents
+
+```shell
+curl "<%= config[:url] %>/v1/financial_institutions/documents" \
+  -H "Authorization: ${token}"
+```
+
+> JSON response:
+
+```json
+```
 
 ## Authorize documents for early payment
 
 ```shell
 curl -X POST "<%= config[:url] %>/v1/financial_institutions/documents" \
-  -H "Authorization: ${token}" \ 
+  -H "Authorization: ${token}" \
   -H "Content-Type: application/json" \
   -d '{ "documents": [1,2,3] }'
 ```
@@ -282,16 +378,16 @@ curl -X POST "<%= config[:url] %>/v1/financial_institutions/documents" \
   {
     "id": 1,
     "emitter": {
-      id: 456,
-      name: "Emitter Name"
+      "id": 456,
+      "name": "Emitter Name"
     },
     "receiver": {
-      id: 789,
-      name: "Receiver Name",
+      "id": 789,
+      "name": "Receiver Name",
     },
     "currency": {
-      id: 1,
-      code: "MXN",
+      "id": 1,
+      "code": "MXN",
     },
     "factoring_id": "FAC123456",
     "uuid": "21295371-177e-41f0-9c5c-c3c87eb71a13",
@@ -304,16 +400,16 @@ curl -X POST "<%= config[:url] %>/v1/financial_institutions/documents" \
   {
     "id": 2,
     "emitter": {
-      id: 456,
-      name: "Emitter Name"
+      "id": 456,
+      "name": "Emitter Name"
     },
     "receiver": {
-      id: 789,
-      name: "Receiver Name",
+      "id": 789,
+      "name": "Receiver Name",
     },
     "currency": {
-      id: 1,
-      code: "MXN",
+      "id": 1,
+      "code": "MXN",
     },
     "factoring_id": "FAC989234",
     "uuid": "a757d971-ddc2-4a7f-be16-47728e96090b",
@@ -326,16 +422,16 @@ curl -X POST "<%= config[:url] %>/v1/financial_institutions/documents" \
   {
     "id": 3,
     "emitter": {
-      id: 456,
-      name: "Emitter Name"
+      "id": 456,
+      "name": "Emitter Name"
     },
     "receiver": {
-      id: 789,
-      name: "Receiver Name",
+      "id": 789,
+      "name": "Receiver Name",
     },
     "currency": {
-      id: 1,
-      code: "MXN",
+      "id": 1,
+      "code": "MXN",
     },
     "factoring_id": "FAC989234",
     "uuid": "324604bc-466d-4620-8b8b-b8eadb031390",
@@ -366,7 +462,244 @@ documents | Array[Integer] | The array of document id's to approve
 
 ### Response
 
-### Statuses 
+Parameter | Type | Description
+--------- | ---- | -----------
+id | Integer | The id of the record
+emitter | <a href="#company" class="link">Company</a> | The document's emitter
+receiver | <a href="#company" class="link">Company</a> | The document's receiver
+currency | <a href="#currency" class="link">Currency</a> | The document's currency
+factoring_id | String | The unique supply chain finance identifier
+uuid | String | The document's unique fiscal identifier
+due_date | DateTime | The date the document will be expired or paid
+total | Float | The document's total
+discount | Float | The document's supply chain finance discount
+result | String | The document's authorization status. Check <a class="link" href="#statuses">statuses</a> below for more details.
+message | String | A message regarding the document's authorization status
+
+# Suppliers
+
+## Get all suppliers
+
+```shell
+curl "<%= config[:url] %>/v1/financial_institutions/suppliers" \
+  -H "Authorization: ${token}"
+```
+
+> JSON response:
+
+```json
+[
+  {
+    "id":1,
+    "approved":true,
+    "discarded_at":null,
+    "digital_record_status":"updated",
+    "supplier":{
+        "id":2,
+        "supplier":{
+          "id":68,
+          "name":"Proveedor 1",
+          "tax_id":"RFC12345",
+          "alias":"Proveedor",
+          "factoring_id":"FAC983405"
+        },
+        "company":{
+          "id":12,
+          "name":"Comprador 1",
+          "tax_id":"RFC12345",
+          "alias":"Comprador",
+          "factoring_id":"FAC983405"
+        }
+    }
+  },
+  {
+    "id":2,
+    "approved":false,
+    "discarded_at":null,
+    "digital_record_status":"updated",
+    "supplier":{
+        "id":2,
+        "supplier":{
+          "id":68,
+          "name":"Proveedor 1",
+          "tax_id":"RFC12345",
+          "alias":"Proveedor",
+          "factoring_id":"FAC983405"
+        },
+        "company":{
+          "id":12,
+          "name":"Comprador 1",
+          "tax_id":"RFC12345",
+          "alias":"Comprador",
+          "factoring_id":"FAC983405"
+        }
+    }
+  }
+]
+```
+
+### HTTP Request
+<span class="tag green">GET</span>
+`<%= config[:url] %>/v1/financial_institutions/suppliers`
+
+### Parameters
+
+Parameter | Type | Required | Default | Description
+--------- | ---- | -------- | ------- | -----------
+supplier | String | `false` | `null` | The name, or part of name, or tax id to filter the suppliers for
+factoring_id | String | `false` | `null` | The factoring id of the supplier
+limit | Integer | `false` | 20 | The amount of record to pull at a time
+page | Integer | `false` | 1  | The page of the records
+status | String | `false` | `null` | The status of the supplier. Accepted values are `authorized` and `unauthorized`
+sort_field | String | `false` | `null` | The field to which sort the values by. Accepted values are `supplier`, `status`, `company`, `factoring_id`
+sort_order | String | `false` | `desc` | The order in which to order the records
+
+### Response
+
+Parameter | Type | Description
+--------- | ---- | -----------
+id | Integer | The id of the record
+approved | Boolean | If the supplier has been authorized or not for supply chain financing
+discarded_at | DateTime | Flag to show if the supplier has been suspended or not
+digital_record_status | String | Supplier's digital record status. Can be one of `[pending, updated]`
+supplier | <a href="#supplier" class="link">Supplier</a> | The supply chain supplier
+
+# Models
+
+<aside class="notice">
+  These are the models that will show up when using the API.
+</aside>
+
+## Supplier
+
+> JSON:
+
+```json
+{
+  "id": 1,
+  "approved": true,
+  "discarded_at": null,
+  "digital_record_status": "updated",
+  "supplier": {
+    "id": 2,
+    "supplier": {
+      "id": 68,
+      "name": "Proveedor 1",
+      "tax_id": "RFC12345",
+      "alias": "Proveedor",
+      "factoring_id": "FAC983405"
+    },
+    "company": {
+      "id": 12,
+      "name": "Comprador 1",
+      "tax_id": "RFC12345",
+      "alias": "Comprador",
+      "factoring_id": "FAC983405",
+    },
+  },
+}
+```
+
+A Supplier model is the representation of the commercial relationship between a buyer and a supplier.
+
+Parameter | Type | Description
+--------- | ---- | -----------
+id | Integer | The id of the record
+supplier | Company | The supplier
+company | Company | The buyer
+
+## Company
+
+> JSON:
+
+```json
+{
+  "id": 68,
+  "name": "Proveedor 1",
+  "tax_id": "RFC12345",
+  "alias": "Proveedor",
+  "factoring_id": "FAC983405"
+}
+```
+
+Parameter | Type | Description
+--------- | ---- | -----------
+id | Integer | The id of the record
+name | String | The company name
+tax_id | String | The company's fiscal id (RFC)
+alias | String | The company commercial name
+factoring_id | String | A unique identifier defined by factoro
+
+## Currency
+
+> JSON:
+
+```json
+{
+  "id": 1,
+  "code": "MXN",
+  "description": "Peso Mexicano",
+}
+```
+
+Parameter | Type | Description
+--------- | ---- | -----------
+id | Integer | The id of the record
+code | String | The 3-digit international currency representation
+description | String | The translated name of the currency
+
+## Credit Line
+
+> JSON:
+
+```json
+{
+  "id": 76,
+  "company": {
+    "name": "Company Name",
+    "alias": "Alias",
+    "tax_id": "Tax ID",
+    "factoring_id": "ID123",
+  },
+  "payment_term": 1,
+  "credit_limit": 1000000,
+  "ordinary_interest_rate": 1.4,
+  "moratorium_interest_factor": 1.1,
+  "moratorium_interest_rate": 4.5,
+  "first_order_rebate": 0,
+  "balance": 0,
+  "start_date": "2021-04-01T12:00:00",
+  "end_date": "2022-04-01T12:00:00",
+  "discarded_at": null,
+  "min_term": 1,
+  "max_term": 100,
+  "min_total": 1,
+  "max_total": 1000000,
+  "token_sent_to": "example@mail.com"
+}
+```
+
+Parameter | Type | Description
+--------- | ---- | -----------
+id | Integer | The id of the record
+company | <a class="link" href="#company">Company</a> | The client to which the credit line is assigned
+credit_limit | Float | The credit limit for the credit line
+ordinary_interest_rate | Float | Base interest rate for the credit line
+moratorium_interest_factor | Float | The factor to multiply the interest rate to get the moratorium interest rate
+moratorium_interest_rate | Float | The calculated moratorium interest rate
+first_order_rebate | Float | The rebate for the company (Includes VAT)
+balance | Float | The spent balance on the credit line
+start_date | Float | The credit line start end
+end_date | Float | The program end date
+discarded_at | DateTime | Flag to know if the credit line is suspended or active
+min_term | Integer | The minimum accepted remaining term for a document to be requested
+max_term | Integer | The maximum accepted remaining term for a document to be requested
+min_total | Float | The minimum accepted total for a document to be requested
+max_total | Float | The maximum accepted total for a document to be requested
+token_sent_to | String | The email to where the invitation token was sent
+
+## Statuses
+
 Status | Description
 ------ | -----------
 <span class="tag green">success</span> | The document was processed successfully

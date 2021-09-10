@@ -80,9 +80,9 @@ html, body {
   // This is the logo at the top of the ToC
   .logo {
     display: block;
-    max-width: 80%;
-    margin-top: $logo-margin;
-    margin-bottom: $logo-margin;
+    max-width: 60%;
+    padding-top: $logo-margin;
+    padding-bottom: $logo-margin;
     object-fit: contain;
     margin: auto;
   }
@@ -725,4 +725,9 @@ html, body {
     background: #fffbe6;
     border-color: #ffe58f;
   }
+}
+
+.link {
+  color: $primary-color;
+  text-decoration: none;
 }
