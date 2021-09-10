@@ -6,13 +6,14 @@ jobs:
   build:
     working_directory: ~/repo
     # Pull latest slate image
-    docker:
-      - image: slatedocs/slate
+    machine: true
     steps:
       # Check out repo
       - checkout
-      # Set up docker
-      - setup_remote_docker
+      # Pull slate image
+      - run:
+          name: Pull Docker image
+          command: docker pull slatedocs/slate
       # Build the docs
       - run:
           name: Build the docs
