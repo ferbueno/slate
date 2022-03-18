@@ -341,6 +341,11 @@
           </li>
           <li>
             <a href="#contracts" class="toc-h1 toc-link" data-title="Contracts">Contracts</a>
+              <ul class="toc-list-h2">
+                  <li>
+                    <a href="#create-contract" class="toc-h2 toc-link" data-title="Create contract">Create contract</a>
+                  </li>
+              </ul>
           </li>
           <li>
             <a href="#currencies" class="toc-h1 toc-link" data-title="Currencies">Currencies</a>
@@ -370,6 +375,20 @@
               </ul>
           </li>
           <li>
+            <a href="#document-authorizations" class="toc-h1 toc-link" data-title="Document Authorizations">Document Authorizations</a>
+              <ul class="toc-list-h2">
+                  <li>
+                    <a href="#http-request-10" class="toc-h2 toc-link" data-title="HTTP Request">HTTP Request</a>
+                  </li>
+                  <li>
+                    <a href="#parameters-5" class="toc-h2 toc-link" data-title="Parameters">Parameters</a>
+                  </li>
+                  <li>
+                    <a href="#response-8" class="toc-h2 toc-link" data-title="Response">Response</a>
+                  </li>
+              </ul>
+          </li>
+          <li>
             <a href="#models" class="toc-h1 toc-link" data-title="Models">Models</a>
               <ul class="toc-list-h2">
                   <li>
@@ -385,6 +404,18 @@
                     <a href="#credit-line" class="toc-h2 toc-link" data-title="Credit Line">Credit Line</a>
                   </li>
                   <li>
+                    <a href="#credit-line-movement" class="toc-h2 toc-link" data-title="Credit Line Movement">Credit Line Movement</a>
+                  </li>
+                  <li>
+                    <a href="#contract" class="toc-h2 toc-link" data-title="Contract">Contract</a>
+                  </li>
+                  <li>
+                    <a href="#document-authorization" class="toc-h2 toc-link" data-title="Document Authorization">Document Authorization</a>
+                  </li>
+                  <li>
+                    <a href="#document" class="toc-h2 toc-link" data-title="Document">Document</a>
+                  </li>
+                  <li>
                     <a href="#statuses" class="toc-h2 toc-link" data-title="Statuses">Statuses</a>
                   </li>
               </ul>
@@ -398,7 +429,7 @@
       <div class="dark-box"></div>
       <div class="content">
         <h1 id='introduction'>Introduction</h1>
-<p>Welcome to the Factoro API  documentation. You can use our API to access our endpoints and integrate your operation directly with us.</p>
+<p>Welcome to the Factoro API documentation. You can use our API to access our endpoints and integrate your operation directly with us.</p>
 
 <p>We have language bindings in Shell, Ruby, Python, and JavaScript! You can view code examples in the dark area to the right, and you can switch the programming language of the examples with the tabs in the top right.</p>
 <h1 id='about-this-api'>About this API</h1>
@@ -418,29 +449,52 @@ Each action that does, will have it in the description.</p>
 </blockquote>
 <div class="highlight"><pre class="highlight shell tab-shell"><code><span class="c"># With shell, you can just pass the correct header with each request</span>
 curl <span class="s2">"https://api.factoro.mx/v1"</span> <span class="se">\</span>
-  <span class="nt">-H</span> <span class="s2">"Authorization: Bearer </span><span class="k">${</span><span class="nv">token</span><span class="k">}</span><span class="s2">"</span>
+  <span class="nt">-H</span> <span class="s2">"Authorization: Bearer </span><span class="k">${</span><span class="nv">secret_key</span><span class="k">}</span><span class="s2">"</span> <span class="nt">-H</span> <span class="s2">"X-API-KEY: </span><span class="k">${</span><span class="nv">api_key</span><span class="k">}</span><span class="s2">"</span>
 </code></pre></div>
 <blockquote>
 <p>Make sure to replace <code>token</code> with your API key.</p>
 </blockquote>
 
-<p>Factoro uses API keys to allow access to the API. As an administrator,
-you can get your API key in your <a href="https://app.factoro.mx/bank/settings" class="link" target="_blank">settings page</a>.</p>
+<p>Factoro uses a combination of API keys to access the API.</p>
 
-<p><code>Authorization: Bearer ${token}</code></p>
+<p>You will receive an <strong>API</strong> <strong>Key</strong> and a <strong>Secret</strong> <strong>Key</strong>, both of which should accompany all your requests.</p>
+
+<p>As an administrator, you can get your API keys in your <a href="https://app.factoro.mx/bank/settings" class="link" target="_blank">settings page</a>.</p>
+
+<table><thead>
+<tr>
+<th>Header</th>
+<th>Content</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>Authorization</td>
+<td>Bearer ${secret_key}</td>
+</tr>
+<tr>
+<td>X-API-KEY</td>
+<td>${api_key}</td>
+</tr>
+</tbody></table>
+
+<p><code>Authorization: Bearer ${secret_key}</code></p>
 
 <aside class="notice">
-You must replace <code>${token}</code> with your personal API key.
+You must replace <code>${secret_key}</code> with your personal secret key and <code>${api_key}</code> with your api key.
+</aside>
+
+<aside class="warning">
+Never share your API keys with anyone. If you believe your keys are compromised, contact the Factoro support team immediately.
 </aside>
 <h1 id='verification'>Verification</h1><h2 id='verify-that-your-integration-and-api-key-is-working'>Verify that your integration and API key is working</h2><div class="highlight"><pre class="highlight shell tab-shell"><code>curl <span class="s2">"https://api.factoro.mx/v1/shared/authentication/hello"</span> <span class="se">\</span>
-  <span class="nt">-H</span> <span class="s2">"Authorization: </span><span class="k">${</span><span class="nv">token</span><span class="k">}</span><span class="s2">"</span>
+  <span class="nt">-H</span> <span class="s2">"Authorization: Bearer </span><span class="k">${</span><span class="nv">secret_key</span><span class="k">}</span><span class="s2">"</span> <span class="nt">-H</span> <span class="s2">"X-API-KEY: </span><span class="k">${</span><span class="nv">api_key</span><span class="k">}</span><span class="s2">"</span>
 </code></pre></div>
 <blockquote>
 <p>Response:</p>
 </blockquote>
 <div class="highlight"><pre class="highlight json tab-json"><code><span class="p">{</span><span class="w">
- </span><span class="nl">"message"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Hello Factoro"</span><span class="p">,</span><span class="w">
- </span><span class="nl">"time"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2021-08-26T12:00:00"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"message"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Hello Factoro"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"time"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2021-08-26T12:00:00"</span><span class="w">
 </span><span class="p">}</span><span class="w">
 </span></code></pre></div>
 <p>This endpoint helps the user verify that the integration is correctly implemented.
@@ -450,7 +504,7 @@ and calling our server.</p>
 <p><span class="tag green">GET</span>
 <code>https://api.factoro.mx/v1/shared/authentication/hello</code></p>
 <h1 id='credit-lines'>Credit Lines</h1><h2 id='get-all-credit-lines'>Get all Credit Lines</h2><div class="highlight"><pre class="highlight shell tab-shell"><code>curl <span class="s2">"https://api.factoro.mx/v1/financial_institutions/credit_lines"</span> <span class="se">\</span>
-  <span class="nt">-H</span> <span class="s2">"Authorization: </span><span class="k">${</span><span class="nv">token</span><span class="k">}</span><span class="s2">"</span>
+  <span class="nt">-H</span> <span class="s2">"Authorization: Bearer </span><span class="k">${</span><span class="nv">secret_key</span><span class="k">}</span><span class="s2">"</span> <span class="nt">-H</span> <span class="s2">"X-API-KEY: </span><span class="k">${</span><span class="nv">api_key</span><span class="k">}</span><span class="s2">"</span>
 </code></pre></div>
 <blockquote>
 <p>Response:</p>
@@ -462,7 +516,7 @@ and calling our server.</p>
       </span><span class="nl">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Company Name"</span><span class="p">,</span><span class="w">
       </span><span class="nl">"alias"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Alias"</span><span class="p">,</span><span class="w">
       </span><span class="nl">"tax_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Tax ID"</span><span class="p">,</span><span class="w">
-      </span><span class="nl">"factoring_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ID123"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"factoring_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ID123"</span><span class="w">
     </span><span class="p">},</span><span class="w">
     </span><span class="nl">"payment_term"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w">
     </span><span class="nl">"credit_limit"</span><span class="p">:</span><span class="w"> </span><span class="mi">1000000</span><span class="p">,</span><span class="w">
@@ -486,7 +540,7 @@ and calling our server.</p>
       </span><span class="nl">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Company Name"</span><span class="p">,</span><span class="w">
       </span><span class="nl">"alias"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Alias"</span><span class="p">,</span><span class="w">
       </span><span class="nl">"tax_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Tax ID"</span><span class="p">,</span><span class="w">
-      </span><span class="nl">"factoring_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ID123"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"factoring_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ID123"</span><span class="w">
     </span><span class="p">},</span><span class="w">
     </span><span class="nl">"payment_term"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w">
     </span><span class="nl">"credit_limit"</span><span class="p">:</span><span class="w"> </span><span class="mi">1000000</span><span class="p">,</span><span class="w">
@@ -571,7 +625,7 @@ and calling our server.</p>
 <h3 id='response'>Response</h3>
 <p>Returns an array of <a class="link" href="#credit-line">Credit Line</a></p>
 <h2 id='get-a-specific-credit-line'>Get a specific credit line</h2><div class="highlight"><pre class="highlight shell tab-shell"><code>curl <span class="s2">"https://api.factoro.mx/v1/financial_institutions/credit_lines/76"</span> <span class="se">\</span>
-  <span class="nt">-H</span> <span class="s2">"Authorization: </span><span class="k">${</span><span class="nv">token</span><span class="k">}</span><span class="s2">"</span>
+  <span class="nt">-H</span> <span class="s2">"Authorization: Bearer </span><span class="k">${</span><span class="nv">secret_key</span><span class="k">}</span><span class="s2">"</span> <span class="nt">-H</span> <span class="s2">"X-API-KEY: </span><span class="k">${</span><span class="nv">api_key</span><span class="k">}</span><span class="s2">"</span>
 </code></pre></div>
 <blockquote>
 <p>The above command returns JSON structured like this:</p>
@@ -582,7 +636,7 @@ and calling our server.</p>
     </span><span class="nl">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Company Name"</span><span class="p">,</span><span class="w">
     </span><span class="nl">"alias"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Alias"</span><span class="p">,</span><span class="w">
     </span><span class="nl">"tax_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Tax ID"</span><span class="p">,</span><span class="w">
-    </span><span class="nl">"factoring_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ID123"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"factoring_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ID123"</span><span class="w">
   </span><span class="p">},</span><span class="w">
   </span><span class="nl">"payment_term"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w">
   </span><span class="nl">"credit_limit"</span><span class="p">:</span><span class="w"> </span><span class="mi">1000000</span><span class="p">,</span><span class="w">
@@ -620,7 +674,7 @@ and calling our server.</p>
 <h3 id='response-2'>Response</h3>
 <p>Returns an instance of <a class="link" href="#credit-line">Credit Line</a></p>
 <h2 id='create-a-credit-line'>Create a Credit Line</h2><div class="highlight"><pre class="highlight shell tab-shell"><code>curl <span class="nt">-X</span> POST <span class="s2">"https://api.factoro.mx/v1/financial_institutions/credit_lines"</span> <span class="se">\</span>
-  <span class="nt">-H</span> <span class="s2">"Authorization: </span><span class="k">${</span><span class="nv">token</span><span class="k">}</span><span class="s2">"</span> <span class="se">\</span>
+  <span class="nt">-H</span> <span class="s2">"Authorization: Bearer </span><span class="k">${</span><span class="nv">secret_key</span><span class="k">}</span><span class="s2">"</span> <span class="nt">-H</span> <span class="s2">"X-API-KEY: </span><span class="k">${</span><span class="nv">api_key</span><span class="k">}</span><span class="s2">"</span> <span class="se">\</span>
   <span class="nt">-H</span> <span class="s2">"Content-Type: application/json"</span> <span class="se">\</span>
   <span class="nt">-d</span> <span class="s1">'{
       "name": "Empresa 1",
@@ -636,6 +690,8 @@ and calling our server.</p>
       "max_term": 100,
       "min_total": 1,
       "max_total": 1000000,
+      "contract_id": 134,
+      "currency": 1,
   }'</span>
 </code></pre></div>
 <blockquote>
@@ -647,7 +703,12 @@ and calling our server.</p>
     </span><span class="nl">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Company Name"</span><span class="p">,</span><span class="w">
     </span><span class="nl">"alias"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Alias"</span><span class="p">,</span><span class="w">
     </span><span class="nl">"tax_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Tax ID"</span><span class="p">,</span><span class="w">
-    </span><span class="nl">"factoring_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ID123"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"factoring_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ID123"</span><span class="w">
+  </span><span class="p">},</span><span class="w">
+  </span><span class="nl">"currency"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"code"</span><span class="p">:</span><span class="w"> </span><span class="s2">"MXN"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"description"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Pedo Mexicano"</span><span class="w">
   </span><span class="p">},</span><span class="w">
   </span><span class="nl">"credit_limit"</span><span class="p">:</span><span class="w"> </span><span class="mi">1000000</span><span class="p">,</span><span class="w">
   </span><span class="nl">"ordinary_interest_rate"</span><span class="p">:</span><span class="w"> </span><span class="mf">1.4</span><span class="p">,</span><span class="w">
@@ -761,8 +822,17 @@ and calling our server.</p>
 <td>The maximum total which documents must comply to be requested and financed</td>
 </tr>
 </tbody></table>
-<h1 id='contracts'>Contracts</h1><h1 id='currencies'>Currencies</h1><h2 id='get-all-currencies'>Get all currencies</h2><div class="highlight"><pre class="highlight shell tab-shell"><code>  curl <span class="s2">"https://api.factoro.mx/v1/shared/currencies"</span> <span class="se">\</span>
-  <span class="nt">-H</span> <span class="s2">"Authorization: </span><span class="k">${</span><span class="nv">token</span><span class="k">}</span><span class="s2">"</span>
+<h1 id='contracts'>Contracts</h1><h2 id='create-contract'>Create contract</h2><div class="highlight"><pre class="highlight shell tab-shell"><code>curl <span class="nt">-X</span> POST <span class="s2">"https://api.factoro.mx/v1/shared/contracts/supply_chain_finance/incorporation"</span> <span class="se">\</span>
+  <span class="nt">-H</span> <span class="s2">"Authorization: Bearer </span><span class="k">${</span><span class="nv">secret_key</span><span class="k">}</span><span class="s2">"</span> <span class="nt">-H</span> <span class="s2">"X-API-KEY: </span><span class="k">${</span><span class="nv">api_key</span><span class="k">}</span><span class="s2">"</span> <span class="se">\</span>
+  <span class="nt">-H</span> <span class="s2">"Content-Type: application/json"</span> <span class="se">\</span>
+  <span class="nt">-F</span> /path/to/file
+</code></pre></div><h3 id='http-request-5'>HTTP Request</h3>
+<p><span class="tag blue">POST</span>
+<code>https://api.factoro.mx/v1/shared/contracts/supply_chain_finance/incorporation</code></p>
+<h3 id='response-3'>Response</h3>
+<p>Returns a <a class="link" href="#contract">Contract</a> instance</p>
+<h1 id='currencies'>Currencies</h1><h2 id='get-all-currencies'>Get all currencies</h2><div class="highlight"><pre class="highlight shell tab-shell"><code>  curl <span class="s2">"https://api.factoro.mx/v1/shared/currencies"</span> <span class="se">\</span>
+  <span class="nt">-H</span> <span class="s2">"Authorization: Bearer </span><span class="k">${</span><span class="nv">secret_key</span><span class="k">}</span><span class="s2">"</span> <span class="nt">-H</span> <span class="s2">"X-API-KEY: </span><span class="k">${</span><span class="nv">api_key</span><span class="k">}</span><span class="s2">"</span>
 </code></pre></div>
 <blockquote>
 <p>JSON response:</p>
@@ -795,10 +865,10 @@ and calling our server.</p>
     </span><span class="err">...</span><span class="w">
   </span><span class="p">]</span><span class="w">
 </span><span class="p">}</span><span class="w">
-</span></code></pre></div><h3 id='http-request-5'>HTTP Request</h3>
+</span></code></pre></div><h3 id='http-request-6'>HTTP Request</h3>
 <p><span class="tag green">GET</span>
 <code>https://api.factoro.mx/v1/shared/currencies</code></p>
-<h3 id='response-3'>Response</h3>
+<h3 id='response-4'>Response</h3>
 <table><thead>
 <tr>
 <th>Parameter</th>
@@ -818,15 +888,7 @@ and calling our server.</p>
 </tr>
 </tbody></table>
 <h1 id='documents'>Documents</h1><h2 id='get-all-documents'>Get all documents</h2><div class="highlight"><pre class="highlight shell tab-shell"><code>curl <span class="s2">"https://api.factoro.mx/v1/financial_institutions/documents"</span> <span class="se">\</span>
-  <span class="nt">-H</span> <span class="s2">"Authorization: </span><span class="k">${</span><span class="nv">token</span><span class="k">}</span><span class="s2">"</span>
-</code></pre></div>
-<blockquote>
-<p>JSON response:</p>
-</blockquote>
-<div class="highlight"><pre class="highlight json tab-json"><code></code></pre></div><h2 id='authorize-documents-for-early-payment'>Authorize documents for early payment</h2><div class="highlight"><pre class="highlight shell tab-shell"><code>curl <span class="nt">-X</span> POST <span class="s2">"https://api.factoro.mx/v1/financial_institutions/documents"</span> <span class="se">\</span>
-  <span class="nt">-H</span> <span class="s2">"Authorization: </span><span class="k">${</span><span class="nv">token</span><span class="k">}</span><span class="s2">"</span> <span class="se">\</span>
-  <span class="nt">-H</span> <span class="s2">"Content-Type: application/json"</span> <span class="se">\</span>
-  <span class="nt">-d</span> <span class="s1">'{ "documents": [1,2,3] }'</span>
+  <span class="nt">-H</span> <span class="s2">"Authorization: Bearer </span><span class="k">${</span><span class="nv">secret_key</span><span class="k">}</span><span class="s2">"</span> <span class="nt">-H</span> <span class="s2">"X-API-KEY: </span><span class="k">${</span><span class="nv">api_key</span><span class="k">}</span><span class="s2">"</span>
 </code></pre></div>
 <blockquote>
 <p>JSON response:</p>
@@ -836,79 +898,85 @@ and calling our server.</p>
     </span><span class="nl">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w">
     </span><span class="nl">"emitter"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
       </span><span class="nl">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">456</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"tax_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Tax ID"</span><span class="p">,</span><span class="w">
       </span><span class="nl">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Emitter Name"</span><span class="w">
     </span><span class="p">},</span><span class="w">
     </span><span class="nl">"receiver"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
       </span><span class="nl">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">789</span><span class="p">,</span><span class="w">
-      </span><span class="nl">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Receiver Name"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"tax_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Tax ID"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Receiver Name"</span><span class="w">
     </span><span class="p">},</span><span class="w">
     </span><span class="nl">"currency"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
       </span><span class="nl">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w">
-      </span><span class="nl">"code"</span><span class="p">:</span><span class="w"> </span><span class="s2">"MXN"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"code"</span><span class="p">:</span><span class="w"> </span><span class="s2">"MXN"</span><span class="w">
     </span><span class="p">},</span><span class="w">
     </span><span class="nl">"factoring_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"FAC123456"</span><span class="p">,</span><span class="w">
     </span><span class="nl">"uuid"</span><span class="p">:</span><span class="w"> </span><span class="s2">"21295371-177e-41f0-9c5c-c3c87eb71a13"</span><span class="p">,</span><span class="w">
     </span><span class="nl">"due_date"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2021-09-30T11:59:59"</span><span class="p">,</span><span class="w">
     </span><span class="nl">"total"</span><span class="p">:</span><span class="w"> </span><span class="mi">10000</span><span class="p">,</span><span class="w">
-    </span><span class="nl">"discount"</span><span class="p">:</span><span class="w"> </span><span class="mi">100</span><span class="p">,</span><span class="w">
-    </span><span class="nl">"result"</span><span class="p">:</span><span class="w"> </span><span class="s2">"success"</span><span class="p">,</span><span class="w">
-    </span><span class="nl">"message"</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span><span class="w">
-  </span><span class="p">},</span><span class="w">
-  </span><span class="p">{</span><span class="w">
-    </span><span class="nl">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w">
-    </span><span class="nl">"emitter"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
-      </span><span class="nl">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">456</span><span class="p">,</span><span class="w">
-      </span><span class="nl">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Emitter Name"</span><span class="w">
-    </span><span class="p">},</span><span class="w">
-    </span><span class="nl">"receiver"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
-      </span><span class="nl">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">789</span><span class="p">,</span><span class="w">
-      </span><span class="nl">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Receiver Name"</span><span class="p">,</span><span class="w">
-    </span><span class="p">},</span><span class="w">
-    </span><span class="nl">"currency"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
-      </span><span class="nl">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w">
-      </span><span class="nl">"code"</span><span class="p">:</span><span class="w"> </span><span class="s2">"MXN"</span><span class="p">,</span><span class="w">
-    </span><span class="p">},</span><span class="w">
-    </span><span class="nl">"factoring_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"FAC989234"</span><span class="p">,</span><span class="w">
-    </span><span class="nl">"uuid"</span><span class="p">:</span><span class="w"> </span><span class="s2">"a757d971-ddc2-4a7f-be16-47728e96090b"</span><span class="p">,</span><span class="w">
-    </span><span class="nl">"due_date"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2021-09-10T11:59:59"</span><span class="p">,</span><span class="w">
-    </span><span class="nl">"total"</span><span class="p">:</span><span class="w"> </span><span class="mi">10000</span><span class="p">,</span><span class="w">
-    </span><span class="nl">"discount"</span><span class="p">:</span><span class="w"> </span><span class="mi">100</span><span class="p">,</span><span class="w">
-    </span><span class="nl">"result"</span><span class="p">:</span><span class="w"> </span><span class="s2">"warning"</span><span class="p">,</span><span class="w">
-    </span><span class="nl">"message"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Fecha de vencimiento documento demasiado próxima"</span><span class="p">,</span><span class="w">
-  </span><span class="p">},</span><span class="w">
-  </span><span class="p">{</span><span class="w">
-    </span><span class="nl">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span><span class="w">
-    </span><span class="nl">"emitter"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
-      </span><span class="nl">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">456</span><span class="p">,</span><span class="w">
-      </span><span class="nl">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Emitter Name"</span><span class="w">
-    </span><span class="p">},</span><span class="w">
-    </span><span class="nl">"receiver"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
-      </span><span class="nl">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">789</span><span class="p">,</span><span class="w">
-      </span><span class="nl">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Receiver Name"</span><span class="p">,</span><span class="w">
-    </span><span class="p">},</span><span class="w">
-    </span><span class="nl">"currency"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
-      </span><span class="nl">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w">
-      </span><span class="nl">"code"</span><span class="p">:</span><span class="w"> </span><span class="s2">"MXN"</span><span class="p">,</span><span class="w">
-    </span><span class="p">},</span><span class="w">
-    </span><span class="nl">"factoring_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"FAC989234"</span><span class="p">,</span><span class="w">
-    </span><span class="nl">"uuid"</span><span class="p">:</span><span class="w"> </span><span class="s2">"324604bc-466d-4620-8b8b-b8eadb031390"</span><span class="p">,</span><span class="w">
-    </span><span class="nl">"due_date"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2021-09-10T11:59:59"</span><span class="p">,</span><span class="w">
-    </span><span class="nl">"total"</span><span class="p">:</span><span class="w"> </span><span class="mi">10000</span><span class="p">,</span><span class="w">
-    </span><span class="nl">"discount"</span><span class="p">:</span><span class="w"> </span><span class="mi">100</span><span class="p">,</span><span class="w">
-    </span><span class="nl">"result"</span><span class="p">:</span><span class="w"> </span><span class="s2">"error"</span><span class="p">,</span><span class="w">
-    </span><span class="nl">"message"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Fondos insuficientes"</span><span class="p">,</span><span class="w">
-  </span><span class="p">},</span><span class="w">
+    </span><span class="nl">"discount"</span><span class="p">:</span><span class="w"> </span><span class="mi">100</span><span class="w">
+  </span><span class="p">}</span><span class="w">
 </span><span class="p">]</span><span class="w">
+</span></code></pre></div>
+<p>Gets all the documents</p>
+<h3 id='http-request-7'>HTTP Request</h3>
+<p><span class="tag green">GET</span>
+<code>https://api.factoro.mx/v1/financial_institutions/documents</code></p>
+<h3 id='parameters-2'>Parameters</h3>
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>emitter</td>
+<td>String</td>
+<td>Name or partial name of document emitter</td>
+</tr>
+<tr>
+<td>receiver</td>
+<td>String</td>
+<td>Name or partial name of document receiver</td>
+</tr>
+<tr>
+<td>factoring_status</td>
+<td>String</td>
+<td>Concatenation of factoring statuses separated by a <code>comma (,)</code></td>
+</tr>
+<tr>
+<td>factoring_id</td>
+<td>String</td>
+<td>Factoro ID for a document</td>
+</tr>
+</tbody></table>
+<h3 id='response-5'>Response</h3>
+<p>Returns an array of <a class="link" href="#document">Documents</a></p>
+<h2 id='authorize-documents-for-early-payment'>Authorize documents for early payment</h2><div class="highlight"><pre class="highlight shell tab-shell"><code>curl <span class="nt">-X</span> POST <span class="s2">"https://api.factoro.mx/v1/financial_institutions/documents"</span> <span class="se">\</span>
+  <span class="nt">-H</span> <span class="s2">"Authorization: Bearer </span><span class="k">${</span><span class="nv">secret_key</span><span class="k">}</span><span class="s2">"</span> <span class="nt">-H</span> <span class="s2">"X-API-KEY: </span><span class="k">${</span><span class="nv">api_key</span><span class="k">}</span><span class="s2">"</span> <span class="se">\</span>
+  <span class="nt">-H</span> <span class="s2">"Content-Type: application/json"</span> <span class="se">\</span>
+  <span class="nt">-d</span> <span class="s1">'{ "documents": [1,2,3] }'</span>
+</code></pre></div>
+<blockquote>
+<p>JSON response:</p>
+</blockquote>
+<div class="highlight"><pre class="highlight json tab-json"><code><span class="p">{</span><span class="w">
+  </span><span class="nl">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"token"</span><span class="p">:</span><span class="w"> </span><span class="s2">"fMAcogbaWeFbY3XMhd5pw3TpAYZ3Be9-HJHCcPr0BB_zeBBQEgeaY3CdGWXmhadt"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"date"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2022-04-01T12:00:00"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"in_process"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"credit_line_movements"</span><span class="p">:</span><span class="w"> </span><span class="p">[]</span><span class="w">
+</span><span class="p">}</span><span class="w">
 </span></code></pre></div>
 <p>This endpoint approves the specified documents for early payment.
 Those documents should be in the <code>requested</code> status.</p>
-<h3 id='http-request-6'>HTTP Request</h3>
+<h3 id='http-request-8'>HTTP Request</h3>
 <p><span class="tag blue">POST</span>
 <code>https://api.factoro.mx/v1/financial_institutions/documents</code></p>
 
-<p>Each document will be returned with its respective status depending on the
-outcome of the operation.</p>
-<h3 id='parameters-2'>Parameters</h3>
+<p>Returns the authorization that&#39;s being processed with all the documents that were sent.</p>
+<h3 id='parameters-3'>Parameters</h3>
 <table><thead>
 <tr>
 <th>Parameter</th>
@@ -922,128 +990,70 @@ outcome of the operation.</p>
 <td>The array of document id&#39;s to approve</td>
 </tr>
 </tbody></table>
-<h3 id='response-4'>Response</h3>
-<table><thead>
-<tr>
-<th>Parameter</th>
-<th>Type</th>
-<th>Description</th>
-</tr>
-</thead><tbody>
-<tr>
-<td>id</td>
-<td>Integer</td>
-<td>The id of the record</td>
-</tr>
-<tr>
-<td>emitter</td>
-<td><a href="#company" class="link">Company</a></td>
-<td>The document&#39;s emitter</td>
-</tr>
-<tr>
-<td>receiver</td>
-<td><a href="#company" class="link">Company</a></td>
-<td>The document&#39;s receiver</td>
-</tr>
-<tr>
-<td>currency</td>
-<td><a href="#currency" class="link">Currency</a></td>
-<td>The document&#39;s currency</td>
-</tr>
-<tr>
-<td>factoring_id</td>
-<td>String</td>
-<td>The unique supply chain finance identifier</td>
-</tr>
-<tr>
-<td>uuid</td>
-<td>String</td>
-<td>The document&#39;s unique fiscal identifier</td>
-</tr>
-<tr>
-<td>due_date</td>
-<td>DateTime</td>
-<td>The date the document will be expired or paid</td>
-</tr>
-<tr>
-<td>total</td>
-<td>Float</td>
-<td>The document&#39;s total</td>
-</tr>
-<tr>
-<td>discount</td>
-<td>Float</td>
-<td>The document&#39;s supply chain finance discount</td>
-</tr>
-<tr>
-<td>result</td>
-<td>String</td>
-<td>The document&#39;s authorization status. Check <a class="link" href="#statuses">statuses</a> below for more details.</td>
-</tr>
-<tr>
-<td>message</td>
-<td>String</td>
-<td>A message regarding the document&#39;s authorization status</td>
-</tr>
-</tbody></table>
+<h3 id='response-6'>Response</h3>
+<p>Returns a <a class="link" href="#document-authorization">Document Authorization</a></p>
+
+<aside class="notice">
+  You can only create one authorization at a time. Until the second authorization is finished processing, the server will throw an error.
+</aside>
 <h1 id='suppliers'>Suppliers</h1><h2 id='get-all-suppliers'>Get all suppliers</h2><div class="highlight"><pre class="highlight shell tab-shell"><code>curl <span class="s2">"https://api.factoro.mx/v1/financial_institutions/suppliers"</span> <span class="se">\</span>
-  <span class="nt">-H</span> <span class="s2">"Authorization: </span><span class="k">${</span><span class="nv">token</span><span class="k">}</span><span class="s2">"</span>
+  <span class="nt">-H</span> <span class="s2">"Authorization: Bearer </span><span class="k">${</span><span class="nv">secret_key</span><span class="k">}</span><span class="s2">"</span> <span class="nt">-H</span> <span class="s2">"X-API-KEY: </span><span class="k">${</span><span class="nv">api_key</span><span class="k">}</span><span class="s2">"</span>
 </code></pre></div>
 <blockquote>
 <p>JSON response:</p>
 </blockquote>
 <div class="highlight"><pre class="highlight json tab-json"><code><span class="p">[</span><span class="w">
   </span><span class="p">{</span><span class="w">
-    </span><span class="nl">"id"</span><span class="p">:</span><span class="mi">1</span><span class="p">,</span><span class="w">
-    </span><span class="nl">"approved"</span><span class="p">:</span><span class="kc">true</span><span class="p">,</span><span class="w">
-    </span><span class="nl">"discarded_at"</span><span class="p">:</span><span class="kc">null</span><span class="p">,</span><span class="w">
-    </span><span class="nl">"digital_record_status"</span><span class="p">:</span><span class="s2">"updated"</span><span class="p">,</span><span class="w">
-    </span><span class="nl">"supplier"</span><span class="p">:{</span><span class="w">
-        </span><span class="nl">"id"</span><span class="p">:</span><span class="mi">2</span><span class="p">,</span><span class="w">
-        </span><span class="nl">"supplier"</span><span class="p">:{</span><span class="w">
-          </span><span class="nl">"id"</span><span class="p">:</span><span class="mi">68</span><span class="p">,</span><span class="w">
-          </span><span class="nl">"name"</span><span class="p">:</span><span class="s2">"Proveedor 1"</span><span class="p">,</span><span class="w">
-          </span><span class="nl">"tax_id"</span><span class="p">:</span><span class="s2">"RFC12345"</span><span class="p">,</span><span class="w">
-          </span><span class="nl">"alias"</span><span class="p">:</span><span class="s2">"Proveedor"</span><span class="p">,</span><span class="w">
-          </span><span class="nl">"factoring_id"</span><span class="p">:</span><span class="s2">"FAC983405"</span><span class="w">
-        </span><span class="p">},</span><span class="w">
-        </span><span class="nl">"company"</span><span class="p">:{</span><span class="w">
-          </span><span class="nl">"id"</span><span class="p">:</span><span class="mi">12</span><span class="p">,</span><span class="w">
-          </span><span class="nl">"name"</span><span class="p">:</span><span class="s2">"Comprador 1"</span><span class="p">,</span><span class="w">
-          </span><span class="nl">"tax_id"</span><span class="p">:</span><span class="s2">"RFC12345"</span><span class="p">,</span><span class="w">
-          </span><span class="nl">"alias"</span><span class="p">:</span><span class="s2">"Comprador"</span><span class="p">,</span><span class="w">
-          </span><span class="nl">"factoring_id"</span><span class="p">:</span><span class="s2">"FAC983405"</span><span class="w">
-        </span><span class="p">}</span><span class="w">
+    </span><span class="nl">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"approved"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"discarded_at"</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"digital_record_status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"updated"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"supplier"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+      </span><span class="nl">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"supplier"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+        </span><span class="nl">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">68</span><span class="p">,</span><span class="w">
+        </span><span class="nl">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Proveedor 1"</span><span class="p">,</span><span class="w">
+        </span><span class="nl">"tax_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"RFC12345"</span><span class="p">,</span><span class="w">
+        </span><span class="nl">"alias"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Proveedor"</span><span class="p">,</span><span class="w">
+        </span><span class="nl">"factoring_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"FAC983405"</span><span class="w">
+      </span><span class="p">},</span><span class="w">
+      </span><span class="nl">"company"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+        </span><span class="nl">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">12</span><span class="p">,</span><span class="w">
+        </span><span class="nl">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Comprador 1"</span><span class="p">,</span><span class="w">
+        </span><span class="nl">"tax_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"RFC12345"</span><span class="p">,</span><span class="w">
+        </span><span class="nl">"alias"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Comprador"</span><span class="p">,</span><span class="w">
+        </span><span class="nl">"factoring_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"FAC983405"</span><span class="w">
+      </span><span class="p">}</span><span class="w">
     </span><span class="p">}</span><span class="w">
   </span><span class="p">},</span><span class="w">
   </span><span class="p">{</span><span class="w">
-    </span><span class="nl">"id"</span><span class="p">:</span><span class="mi">2</span><span class="p">,</span><span class="w">
-    </span><span class="nl">"approved"</span><span class="p">:</span><span class="kc">false</span><span class="p">,</span><span class="w">
-    </span><span class="nl">"discarded_at"</span><span class="p">:</span><span class="kc">null</span><span class="p">,</span><span class="w">
-    </span><span class="nl">"digital_record_status"</span><span class="p">:</span><span class="s2">"updated"</span><span class="p">,</span><span class="w">
-    </span><span class="nl">"supplier"</span><span class="p">:{</span><span class="w">
-        </span><span class="nl">"id"</span><span class="p">:</span><span class="mi">2</span><span class="p">,</span><span class="w">
-        </span><span class="nl">"supplier"</span><span class="p">:{</span><span class="w">
-          </span><span class="nl">"id"</span><span class="p">:</span><span class="mi">68</span><span class="p">,</span><span class="w">
-          </span><span class="nl">"name"</span><span class="p">:</span><span class="s2">"Proveedor 1"</span><span class="p">,</span><span class="w">
-          </span><span class="nl">"tax_id"</span><span class="p">:</span><span class="s2">"RFC12345"</span><span class="p">,</span><span class="w">
-          </span><span class="nl">"alias"</span><span class="p">:</span><span class="s2">"Proveedor"</span><span class="p">,</span><span class="w">
-          </span><span class="nl">"factoring_id"</span><span class="p">:</span><span class="s2">"FAC983405"</span><span class="w">
-        </span><span class="p">},</span><span class="w">
-        </span><span class="nl">"company"</span><span class="p">:{</span><span class="w">
-          </span><span class="nl">"id"</span><span class="p">:</span><span class="mi">12</span><span class="p">,</span><span class="w">
-          </span><span class="nl">"name"</span><span class="p">:</span><span class="s2">"Comprador 1"</span><span class="p">,</span><span class="w">
-          </span><span class="nl">"tax_id"</span><span class="p">:</span><span class="s2">"RFC12345"</span><span class="p">,</span><span class="w">
-          </span><span class="nl">"alias"</span><span class="p">:</span><span class="s2">"Comprador"</span><span class="p">,</span><span class="w">
-          </span><span class="nl">"factoring_id"</span><span class="p">:</span><span class="s2">"FAC983405"</span><span class="w">
-        </span><span class="p">}</span><span class="w">
+    </span><span class="nl">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"approved"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"discarded_at"</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"digital_record_status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"updated"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"supplier"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+      </span><span class="nl">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"supplier"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+        </span><span class="nl">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">68</span><span class="p">,</span><span class="w">
+        </span><span class="nl">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Proveedor 1"</span><span class="p">,</span><span class="w">
+        </span><span class="nl">"tax_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"RFC12345"</span><span class="p">,</span><span class="w">
+        </span><span class="nl">"alias"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Proveedor"</span><span class="p">,</span><span class="w">
+        </span><span class="nl">"factoring_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"FAC983405"</span><span class="w">
+      </span><span class="p">},</span><span class="w">
+      </span><span class="nl">"company"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+        </span><span class="nl">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">12</span><span class="p">,</span><span class="w">
+        </span><span class="nl">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Comprador 1"</span><span class="p">,</span><span class="w">
+        </span><span class="nl">"tax_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"RFC12345"</span><span class="p">,</span><span class="w">
+        </span><span class="nl">"alias"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Comprador"</span><span class="p">,</span><span class="w">
+        </span><span class="nl">"factoring_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"FAC983405"</span><span class="w">
+      </span><span class="p">}</span><span class="w">
     </span><span class="p">}</span><span class="w">
   </span><span class="p">}</span><span class="w">
 </span><span class="p">]</span><span class="w">
-</span></code></pre></div><h3 id='http-request-7'>HTTP Request</h3>
+</span></code></pre></div><h3 id='http-request-9'>HTTP Request</h3>
 <p><span class="tag green">GET</span>
 <code>https://api.factoro.mx/v1/financial_institutions/suppliers</code></p>
-<h3 id='parameters-3'>Parameters</h3>
+<h3 id='parameters-4'>Parameters</h3>
 <table><thead>
 <tr>
 <th>Parameter</th>
@@ -1103,7 +1113,7 @@ outcome of the operation.</p>
 <td>The order in which to order the records</td>
 </tr>
 </tbody></table>
-<h3 id='response-5'>Response</h3>
+<h3 id='response-7'>Response</h3>
 <table><thead>
 <tr>
 <th>Parameter</th>
@@ -1137,6 +1147,47 @@ outcome of the operation.</p>
 <td>The supply chain supplier</td>
 </tr>
 </tbody></table>
+<h1 id='document-authorizations'>Document Authorizations</h1><div class="highlight"><pre class="highlight shell tab-shell"><code>curl <span class="nt">-X</span> POST <span class="s2">"https://api.factoro.mx/v1/financial_institutions/documents/authorizations/</span><span class="k">${</span><span class="nv">token</span><span class="k">}</span><span class="s2">"</span> <span class="se">\</span>
+  <span class="nt">-H</span> <span class="s2">"Authorization: Bearer </span><span class="k">${</span><span class="nv">secret_key</span><span class="k">}</span><span class="s2">"</span> <span class="nt">-H</span> <span class="s2">"X-API-KEY: </span><span class="k">${</span><span class="nv">api_key</span><span class="k">}</span><span class="s2">"</span> <span class="se">\</span>
+  <span class="nt">-H</span> <span class="s2">"Content-Type: application/json"</span>
+</code></pre></div>
+<blockquote>
+<p>JSON response:</p>
+</blockquote>
+<div class="highlight"><pre class="highlight json tab-json"><code><span class="p">{</span><span class="w">
+  </span><span class="nl">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"token"</span><span class="p">:</span><span class="w"> </span><span class="s2">"fMAcogbaWeFbY3XMhd5pw3TpAYZ3Be9-HJHCcPr0BB_zeBBQEgeaY3CdGWXmhadt"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"date"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2022-04-01T12:00:00"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"done"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"credit_line_movements"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+    </span><span class="p">{</span><span class="w">
+      </span><span class="err">...</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+  </span><span class="p">]</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div>
+<p>Gets the specified document authorization</p>
+<h3 id='http-request-10'>HTTP Request</h3>
+<p><span class="tag blue">POST</span>
+<code>https://api.factoro.mx/v1/financial_institutions/documents/authorizations/${token}</code></p>
+
+<p>Returns the authorization that&#39;s being processed with all the documents that were sent.</p>
+<h3 id='parameters-5'>Parameters</h3>
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>documents</td>
+<td>Array[Integer]</td>
+<td>The array of document id&#39;s to approve</td>
+</tr>
+</tbody></table>
+<h3 id='response-8'>Response</h3>
+<p>Returns a <a class="link" href="#document-authorization">Document Authorization</a></p>
 <h1 id='models'>Models</h1>
 <aside class="notice">
   These are the models that will show up when using the API.
@@ -1164,9 +1215,9 @@ outcome of the operation.</p>
       </span><span class="nl">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Comprador 1"</span><span class="p">,</span><span class="w">
       </span><span class="nl">"tax_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"RFC12345"</span><span class="p">,</span><span class="w">
       </span><span class="nl">"alias"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Comprador"</span><span class="p">,</span><span class="w">
-      </span><span class="nl">"factoring_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"FAC983405"</span><span class="p">,</span><span class="w">
-    </span><span class="p">},</span><span class="w">
-  </span><span class="p">},</span><span class="w">
+      </span><span class="nl">"factoring_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"FAC983405"</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+  </span><span class="p">}</span><span class="w">
 </span><span class="p">}</span><span class="w">
 </span></code></pre></div>
 <p>A Supplier model is the representation of the commercial relationship between a buyer and a supplier.</p>
@@ -1246,7 +1297,7 @@ outcome of the operation.</p>
 <div class="highlight"><pre class="highlight json tab-json"><code><span class="p">{</span><span class="w">
   </span><span class="nl">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w">
   </span><span class="nl">"code"</span><span class="p">:</span><span class="w"> </span><span class="s2">"MXN"</span><span class="p">,</span><span class="w">
-  </span><span class="nl">"description"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Peso Mexicano"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"description"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Peso Mexicano"</span><span class="w">
 </span><span class="p">}</span><span class="w">
 </span></code></pre></div>
 <table><thead>
@@ -1282,7 +1333,7 @@ outcome of the operation.</p>
     </span><span class="nl">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Company Name"</span><span class="p">,</span><span class="w">
     </span><span class="nl">"alias"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Alias"</span><span class="p">,</span><span class="w">
     </span><span class="nl">"tax_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Tax ID"</span><span class="p">,</span><span class="w">
-    </span><span class="nl">"factoring_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ID123"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"factoring_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ID123"</span><span class="w">
   </span><span class="p">},</span><span class="w">
   </span><span class="nl">"payment_term"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w">
   </span><span class="nl">"credit_limit"</span><span class="p">:</span><span class="w"> </span><span class="mi">1000000</span><span class="p">,</span><span class="w">
@@ -1350,12 +1401,12 @@ outcome of the operation.</p>
 </tr>
 <tr>
 <td>start_date</td>
-<td>Float</td>
+<td>DateTime</td>
 <td>The credit line start end</td>
 </tr>
 <tr>
 <td>end_date</td>
-<td>Float</td>
+<td>DateTime</td>
 <td>The program end date</td>
 </tr>
 <tr>
@@ -1387,6 +1438,240 @@ outcome of the operation.</p>
 <td>token_sent_to</td>
 <td>String</td>
 <td>The email to where the invitation token was sent</td>
+</tr>
+</tbody></table>
+<h2 id='credit-line-movement'>Credit Line Movement</h2>
+<blockquote>
+<p>JSON:</p>
+</blockquote>
+<div class="highlight"><pre class="highlight json tab-json"><code><span class="p">{</span><span class="w">
+  </span><span class="nl">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"date"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2022-04-01T12:00:00"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"total"</span><span class="p">:</span><span class="w"> </span><span class="mf">1234.00</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"folio"</span><span class="p">:</span><span class="w"> </span><span class="s2">"AASSDDFF"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"processed"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"movement_type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"discount"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"created_at"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2022-04-01T12:00:00"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"documents"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+    </span><span class="p">{</span><span class="w">
+      </span><span class="err">...</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+  </span><span class="p">]</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div>
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>id</td>
+<td>Integer</td>
+<td>The id of the record</td>
+</tr>
+<tr>
+<td>total</td>
+<td>Float</td>
+<td>The total representing this movement on the credit line</td>
+</tr>
+<tr>
+<td>folio</td>
+<td>String</td>
+<td>Human readable folio for the movement</td>
+</tr>
+<tr>
+<td>status</td>
+<td>String</td>
+<td>One of <code>in_process</code>, <code>processed</code></td>
+</tr>
+<tr>
+<td>movement_type</td>
+<td>String</td>
+<td>One of <code>discount</code>, <code>payment</code></td>
+</tr>
+<tr>
+<td>created_at</td>
+<td>String</td>
+<td>The date the movement was created</td>
+</tr>
+<tr>
+<td>documents</td>
+<td><a class="link" href="#document">Document</a></td>
+<td>The documents related to the credit line movement</td>
+</tr>
+</tbody></table>
+<h2 id='contract'>Contract</h2>
+<blockquote>
+<p>JSON:</p>
+</blockquote>
+<div class="highlight"><pre class="highlight json tab-json"><code><span class="p">{</span><span class="w">
+  </span><span class="nl">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"is_signed"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"category"</span><span class="p">:</span><span class="w"> </span><span class="s2">"supply_chain_finance"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"contract_type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"incorporation"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Contract Name"</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div>
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>id</td>
+<td>Integer</td>
+<td>The id of the record</td>
+</tr>
+<tr>
+<td>is_signed</td>
+<td>Boolean</td>
+<td>If the contract has been signed or not</td>
+</tr>
+<tr>
+<td>category</td>
+<td>String</td>
+<td>The contract category</td>
+</tr>
+<tr>
+<td>contract_type</td>
+<td>String</td>
+<td>The contract type</td>
+</tr>
+<tr>
+<td>name</td>
+<td>String</td>
+<td>The contract&#39;s file name</td>
+</tr>
+</tbody></table>
+<h2 id='document-authorization'>Document Authorization</h2>
+<blockquote>
+<p>JSON:</p>
+</blockquote>
+<div class="highlight"><pre class="highlight json tab-json"><code><span class="p">{</span><span class="w">
+  </span><span class="nl">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"token"</span><span class="p">:</span><span class="w"> </span><span class="s2">"fMAcogbaWeFbY3XMhd5pw3TpAYZ3Be9-HJHCcPr0BB_zeBBQEgeaY3CdGWXmhadt"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"date"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2022-04-01T12:00:00"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"done"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"credit_line_movements"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+    </span><span class="p">{</span><span class="w">
+      </span><span class="err">...</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+  </span><span class="p">]</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div>
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>id</td>
+<td>Integer</td>
+<td>The id of the record</td>
+</tr>
+<tr>
+<td>token</td>
+<td>String</td>
+<td>The unique token for retrieval</td>
+</tr>
+<tr>
+<td>status</td>
+<td>String</td>
+<td>One of <code>in_process</code>, <code>done</code>, <code>error</code></td>
+</tr>
+<tr>
+<td>date</td>
+<td>DateTime</td>
+<td>The date it was created in ISO format</td>
+</tr>
+<tr>
+<td>credit_line_movements</td>
+<td><a class="link" href="#credit-line-movement">Credit Line Movement</a></td>
+<td>All the credit line movements associated with the authorization</td>
+</tr>
+</tbody></table>
+<h2 id='document'>Document</h2>
+<blockquote>
+<p>JSON:</p>
+</blockquote>
+<div class="highlight"><pre class="highlight json tab-json"><code><span class="p">{</span><span class="w">
+  </span><span class="nl">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"emitter"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">456</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Emitter Name"</span><span class="w">
+  </span><span class="p">},</span><span class="w">
+  </span><span class="nl">"receiver"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">789</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Receiver Name"</span><span class="w">
+  </span><span class="p">},</span><span class="w">
+  </span><span class="nl">"currency"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"code"</span><span class="p">:</span><span class="w"> </span><span class="s2">"MXN"</span><span class="w">
+  </span><span class="p">},</span><span class="w">
+  </span><span class="nl">"factoring_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"FAC123456"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"uuid"</span><span class="p">:</span><span class="w"> </span><span class="s2">"21295371-177e-41f0-9c5c-c3c87eb71a13"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"due_date"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2021-09-30T11:59:59"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"total"</span><span class="p">:</span><span class="w"> </span><span class="mi">10000</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"discount"</span><span class="p">:</span><span class="w"> </span><span class="mi">100</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div>
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>id</td>
+<td>Integer</td>
+<td>The id of the record</td>
+</tr>
+<tr>
+<td>emitter</td>
+<td><a href="#company" class="link">Company</a></td>
+<td>The document&#39;s emitter</td>
+</tr>
+<tr>
+<td>receiver</td>
+<td><a href="#company" class="link">Company</a></td>
+<td>The document&#39;s receiver</td>
+</tr>
+<tr>
+<td>currency</td>
+<td><a href="#currency" class="link">Currency</a></td>
+<td>The document&#39;s currency</td>
+</tr>
+<tr>
+<td>factoring_id</td>
+<td>String</td>
+<td>The unique supply chain finance identifier</td>
+</tr>
+<tr>
+<td>uuid</td>
+<td>String</td>
+<td>The document&#39;s unique fiscal identifier</td>
+</tr>
+<tr>
+<td>due_date</td>
+<td>DateTime</td>
+<td>The date the document will be expired or paid</td>
+</tr>
+<tr>
+<td>total</td>
+<td>Float</td>
+<td>The document&#39;s total</td>
+</tr>
+<tr>
+<td>discount</td>
+<td>Float</td>
+<td>The document&#39;s supply chain finance discount</td>
 </tr>
 </tbody></table>
 <h2 id='statuses'>Statuses</h2>
