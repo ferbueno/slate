@@ -17,7 +17,7 @@ jobs:
       # Build the docs
       - run:
           name: Build the docs
-          command: docker run --rm --name slate -v $(pwd)/build:/srv/slate/build -v $(pwd)/source:/srv/slate/source slatedocs/slate
+          command: docker run --rm --name slate -v $(pwd)/build:/srv/slate/build -v $(pwd)/source:/srv/slate/source slatedocs/slate build
       # Store the build
       - persist_to_workspace:
           root: ~/repo
