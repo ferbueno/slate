@@ -14,7 +14,7 @@ code_clipboard: true
 
 # Introduction
 
-Welcome to the Factoro API  documentation. You can use our API to access our endpoints and integrate your operation directly with us.
+Welcome to the Factoro API documentation. You can use our API to access our endpoints and integrate your operation directly with us.
 
 We have language bindings in Shell, Ruby, Python, and JavaScript! You can view code examples in the dark area to the right, and you can switch the programming language of the examples with the tabs in the top right.
 
@@ -38,18 +38,30 @@ We broke down information result into Models, to maintain a simpler and cleaner 
 ```shell
 # With shell, you can just pass the correct header with each request
 curl "<%= config[:url] %>/v1" \
-  -H "Authorization: Bearer ${token}"
+  -H "Authorization: Bearer ${secret_key}" -H "X-API-KEY: ${api_key}"
 ```
 
 > Make sure to replace `token` with your API key.
 
-Factoro uses API keys to allow access to the API. As an administrator,
-you can get your API key in your <a href="https://app.factoro.mx/bank/settings" class="link" target="_blank">settings page</a>.
+Factoro uses a combination of API keys to access the API.
 
-`Authorization: Bearer ${token}`
+You will receive an **API** **Key** and a **Secret** **Key**, both of which should accompany all your requests.
+
+As an administrator, you can get your API keys in your <a href="https://app.factoro.mx/bank/settings" class="link" target="_blank">settings page</a>.
+
+| Header        | Content              |
+| ------------- | -------------------- |
+| Authorization | Bearer ${secret_key} |
+| X-API-KEY     | ${api_key}           |
+
+`Authorization: Bearer ${secret_key}`
 
 <aside class="notice">
-You must replace <code>${token}</code> with your personal API key.
+You must replace <code>${secret_key}</code> with your personal secret key and <code>${api_key}</code> with your api key.
+</aside>
+
+<aside class="warning">
+Never share your API keys with anyone. If you believe your keys are compromised, contact the Factoro support team immediately.
 </aside>
 
 # Verification
@@ -58,15 +70,15 @@ You must replace <code>${token}</code> with your personal API key.
 
 ```shell
 curl "<%= config[:url] %>/v1/shared/authentication/hello" \
-  -H "Authorization: ${token}"
+  -H "Authorization: Bearer ${secret_key}" -H "X-API-KEY: ${api_key}"
 ```
 
 > Response:
 
 ```json
 {
- "message": "Hello Factoro",
- "time": "2021-08-26T12:00:00",
+  "message": "Hello Factoro",
+  "time": "2021-08-26T12:00:00"
 }
 ```
 
@@ -85,7 +97,7 @@ and calling our server.
 
 ```shell
 curl "<%= config[:url] %>/v1/financial_institutions/credit_lines" \
-  -H "Authorization: ${token}"
+  -H "Authorization: Bearer ${secret_key}" -H "X-API-KEY: ${api_key}"
 ```
 
 > Response:
@@ -98,7 +110,7 @@ curl "<%= config[:url] %>/v1/financial_institutions/credit_lines" \
       "name": "Company Name",
       "alias": "Alias",
       "tax_id": "Tax ID",
-      "factoring_id": "ID123",
+      "factoring_id": "ID123"
     },
     "payment_term": 1,
     "credit_limit": 1000000,
@@ -122,7 +134,7 @@ curl "<%= config[:url] %>/v1/financial_institutions/credit_lines" \
       "name": "Company Name",
       "alias": "Alias",
       "tax_id": "Tax ID",
-      "factoring_id": "ID123",
+      "factoring_id": "ID123"
     },
     "payment_term": 1,
     "credit_limit": 1000000,
@@ -152,16 +164,16 @@ This endpoint gets all credit lines
 
 ### Query Parameters
 
-Parameter | Type | Default | Description
---------- | -----| ------- | -----------
-page | Integer | 1 | The page number for result retrieval
-sort_field | String | date | The field to which sort the credit lines
-sort_order | String | desc | The order in which the credit lines are shown
-company | String | null | The name or alias of a specific company to filter credit lines
-limit | Integer | 20 | The amount of credit lines to show per page
-start_date | Date | null | The start date to filter
-end_date | Date | null | The end date to filter
-currency_id | Integer | null | The ID of the currency to filter by currency
+| Parameter   | Type    | Default | Description                                                    |
+| ----------- | ------- | ------- | -------------------------------------------------------------- |
+| page        | Integer | 1       | The page number for result retrieval                           |
+| sort_field  | String  | date    | The field to which sort the credit lines                       |
+| sort_order  | String  | desc    | The order in which the credit lines are shown                  |
+| company     | String  | null    | The name or alias of a specific company to filter credit lines |
+| limit       | Integer | 20      | The amount of credit lines to show per page                    |
+| start_date  | Date    | null    | The start date to filter                                       |
+| end_date    | Date    | null    | The end date to filter                                         |
+| currency_id | Integer | null    | The ID of the currency to filter by currency                   |
 
 ### Response
 
@@ -171,7 +183,7 @@ Returns an array of <a class="link" href="#credit-line">Credit Line</a>
 
 ```shell
 curl "<%= config[:url] %>/v1/financial_institutions/credit_lines/76" \
-  -H "Authorization: ${token}"
+  -H "Authorization: Bearer ${secret_key}" -H "X-API-KEY: ${api_key}"
 ```
 
 > The above command returns JSON structured like this:
@@ -183,7 +195,7 @@ curl "<%= config[:url] %>/v1/financial_institutions/credit_lines/76" \
     "name": "Company Name",
     "alias": "Alias",
     "tax_id": "Tax ID",
-    "factoring_id": "ID123",
+    "factoring_id": "ID123"
   },
   "payment_term": 1,
   "credit_limit": 1000000,
@@ -206,14 +218,15 @@ curl "<%= config[:url] %>/v1/financial_institutions/credit_lines/76" \
 This endpoint retrieves a specific credit line
 
 ### HTTP Request
+
 <span class="tag green">GET</span>
 `<%= config[:url] %>/v1/financial_institutions/credit_lines/${id}`
 
 ### URL Parameters
 
-Parameter | Description
---------- | -----------
-id | The ID of the credit line to retrieve
+| Parameter | Description                           |
+| --------- | ------------------------------------- |
+| id        | The ID of the credit line to retrieve |
 
 ### Response
 
@@ -223,7 +236,7 @@ Returns an instance of <a class="link" href="#credit-line">Credit Line</a>
 
 ```shell
 curl -X POST "<%= config[:url] %>/v1/financial_institutions/credit_lines" \
-  -H "Authorization: ${token}" \
+  -H "Authorization: Bearer ${secret_key}" -H "X-API-KEY: ${api_key}" \
   -H "Content-Type: application/json" \
   -d '{
       "name": "Empresa 1",
@@ -278,27 +291,28 @@ curl -X POST "<%= config[:url] %>/v1/financial_institutions/credit_lines" \
 ```
 
 ### HTTP Request
+
 <span class="tag blue">POST</span>
 `<%= config[:url] %>/v1/financial_institutions/credit_lines`
 
 ### Parameters
 
-Parameter | Type | Required | Description
---------- | ---- | -------- | -----------
-name | String | `true` | The name of the company to add
-contact_name | String | `true` | The name of the person to receive the invitation
-email | String | `true` | The email to where we're sending the invitation
-tax_id | String | `true` | The company tax id
-credit_limit | Float | `true` | The limit to what your client can dispose
-currency | Integer | `true` | The ID of the currency in which the credit line will be created
-contract_id | Integer | `true` | The ID of the uploaded contract
-ordinary_interest_rate | Float | `true` | The rate with which you are charging
-moratorium_interest_factor | Float | `true` | The factor with which the interest rate will be multiplied to calculate the moratorium interest rate
-first_order_rebate | Float | `false` | The rebate to add to your client
-min_term | Integer | `true` | The minimum term which documents must comply to be requested and financed
-max_term | Integer | `true` | The maximum term which documents must comply to be requested and financed
-min_total | Float | `true` | The minimum total which documents must comply to be requested and financed
-max_total | Float | `true` | The maximum total which documents must comply to be requested and financed
+| Parameter                  | Type    | Required | Description                                                                                          |
+| -------------------------- | ------- | -------- | ---------------------------------------------------------------------------------------------------- |
+| name                       | String  | `true`   | The name of the company to add                                                                       |
+| contact_name               | String  | `true`   | The name of the person to receive the invitation                                                     |
+| email                      | String  | `true`   | The email to where we're sending the invitation                                                      |
+| tax_id                     | String  | `true`   | The company tax id                                                                                   |
+| credit_limit               | Float   | `true`   | The limit to what your client can dispose                                                            |
+| currency                   | Integer | `true`   | The ID of the currency in which the credit line will be created                                      |
+| contract_id                | Integer | `true`   | The ID of the uploaded contract                                                                      |
+| ordinary_interest_rate     | Float   | `true`   | The rate with which you are charging                                                                 |
+| moratorium_interest_factor | Float   | `true`   | The factor with which the interest rate will be multiplied to calculate the moratorium interest rate |
+| first_order_rebate         | Float   | `false`  | The rebate to add to your client                                                                     |
+| min_term                   | Integer | `true`   | The minimum term which documents must comply to be requested and financed                            |
+| max_term                   | Integer | `true`   | The maximum term which documents must comply to be requested and financed                            |
+| min_total                  | Float   | `true`   | The minimum total which documents must comply to be requested and financed                           |
+| max_total                  | Float   | `true`   | The maximum total which documents must comply to be requested and financed                           |
 
 # Contracts
 
@@ -306,16 +320,18 @@ max_total | Float | `true` | The maximum total which documents must comply to be
 
 ```shell
 curl -X POST "<%= config[:url] %>/v1/shared/contracts/supply_chain_finance/incorporation" \
-  -H "Authorization: ${token}" \
+  -H "Authorization: Bearer ${secret_key}" -H "X-API-KEY: ${api_key}" \
   -H "Content-Type: application/json" \
   -F /path/to/file
 ```
 
 ### HTTP Request
+
 <span class="tag blue">POST</span>
 `<%= config[:url] %>/v1/shared/contracts/supply_chain_finance/incorporation`
 
 ### Response
+
 Returns a <a class="link" href="#contract">Contract</a> instance
 
 # Currencies
@@ -324,7 +340,7 @@ Returns a <a class="link" href="#contract">Contract</a> instance
 
 ```shell
   curl "<%= config[:url] %>/v1/shared/currencies" \
-  -H "Authorization: ${token}"
+  -H "Authorization: Bearer ${secret_key}" -H "X-API-KEY: ${api_key}"
 ```
 
 > JSON response:
@@ -361,15 +377,16 @@ Returns a <a class="link" href="#contract">Contract</a> instance
 ```
 
 ### HTTP Request
+
 <span class="tag green">GET</span>
 `<%= config[:url] %>/v1/shared/currencies`
 
 ### Response
 
-Parameter | Type | Description
---------- | ---- | -----------
-common | Array[<a class="link" href="#currency">Currency</a>] | The most common used currencies
-currencies | Array[<a class="link" href="#currency">Currency</a>] | All available currencies
+| Parameter  | Type                                                 | Description                     |
+| ---------- | ---------------------------------------------------- | ------------------------------- |
+| common     | Array[<a class="link" href="#currency">Currency</a>] | The most common used currencies |
+| currencies | Array[<a class="link" href="#currency">Currency</a>] | All available currencies        |
 
 # Documents
 
@@ -377,21 +394,7 @@ currencies | Array[<a class="link" href="#currency">Currency</a>] | All availabl
 
 ```shell
 curl "<%= config[:url] %>/v1/financial_institutions/documents" \
-  -H "Authorization: ${token}"
-```
-
-> JSON response:
-
-```json
-```
-
-## Authorize documents for early payment
-
-```shell
-curl -X POST "<%= config[:url] %>/v1/financial_institutions/documents" \
-  -H "Authorization: ${token}" \
-  -H "Content-Type: application/json" \
-  -d '{ "documents": [1,2,3] }'
+  -H "Authorization: Bearer ${secret_key}" -H "X-API-KEY: ${api_key}"
 ```
 
 > JSON response:
@@ -402,102 +405,91 @@ curl -X POST "<%= config[:url] %>/v1/financial_institutions/documents" \
     "id": 1,
     "emitter": {
       "id": 456,
+      "tax_id": "Tax ID",
       "name": "Emitter Name"
     },
     "receiver": {
       "id": 789,
-      "name": "Receiver Name",
+      "tax_id": "Tax ID",
+      "name": "Receiver Name"
     },
     "currency": {
       "id": 1,
-      "code": "MXN",
+      "code": "MXN"
     },
     "factoring_id": "FAC123456",
     "uuid": "21295371-177e-41f0-9c5c-c3c87eb71a13",
     "due_date": "2021-09-30T11:59:59",
     "total": 10000,
-    "discount": 100,
-    "result": "success",
-    "message": null,
-  },
-  {
-    "id": 2,
-    "emitter": {
-      "id": 456,
-      "name": "Emitter Name"
-    },
-    "receiver": {
-      "id": 789,
-      "name": "Receiver Name",
-    },
-    "currency": {
-      "id": 1,
-      "code": "MXN",
-    },
-    "factoring_id": "FAC989234",
-    "uuid": "a757d971-ddc2-4a7f-be16-47728e96090b",
-    "due_date": "2021-09-10T11:59:59",
-    "total": 10000,
-    "discount": 100,
-    "result": "warning",
-    "message": "Fecha de vencimiento documento demasiado próxima",
-  },
-  {
-    "id": 3,
-    "emitter": {
-      "id": 456,
-      "name": "Emitter Name"
-    },
-    "receiver": {
-      "id": 789,
-      "name": "Receiver Name",
-    },
-    "currency": {
-      "id": 1,
-      "code": "MXN",
-    },
-    "factoring_id": "FAC989234",
-    "uuid": "324604bc-466d-4620-8b8b-b8eadb031390",
-    "due_date": "2021-09-10T11:59:59",
-    "total": 10000,
-    "discount": 100,
-    "result": "error",
-    "message": "Fondos insuficientes",
-  },
+    "discount": 100
+  }
 ]
+```
+
+Gets all the documents
+
+### HTTP Request
+
+<span class="tag green">GET</span>
+`<%= config[:url] %>/v1/financial_institutions/documents`
+
+### Parameters
+
+| Parameter        | Type   | Description                                                               |
+| ---------------- | ------ | ------------------------------------------------------------------------- |
+| emitter          | String | Name or partial name of document emitter                                  |
+| receiver         | String | Name or partial name of document receiver                                 |
+| factoring_status | String | Concatenation of factoring statuses separated by a <code>comma (,)</code> |
+| factoring_id     | String | Factoro ID for a document                                                 |
+
+### Response
+
+Returns an array of <a class="link" href="#document">Documents</a>
+
+## Authorize documents for early payment
+
+```shell
+curl -X POST "<%= config[:url] %>/v1/financial_institutions/documents" \
+  -H "Authorization: Bearer ${secret_key}" -H "X-API-KEY: ${api_key}" \
+  -H "Content-Type: application/json" \
+  -d '{ "documents": [1,2,3] }'
+```
+
+> JSON response:
+
+```json
+{
+  "id": 1,
+  "token": "fMAcogbaWeFbY3XMhd5pw3TpAYZ3Be9-HJHCcPr0BB_zeBBQEgeaY3CdGWXmhadt",
+  "date": "2022-04-01T12:00:00",
+  "status": "in_process",
+  "credit_line_movements": []
+}
 ```
 
 This endpoint approves the specified documents for early payment.
 Those documents should be in the `requested` status.
 
 ### HTTP Request
+
 <span class="tag blue">POST</span>
 `<%= config[:url] %>/v1/financial_institutions/documents`
 
-Each document will be returned with its respective status depending on the
-outcome of the operation.
+Returns the authorization that's being processed with all the documents that were sent.
 
 ### Parameters
 
-Parameter | Type | Description
---------- | ---- | -----------
-documents | Array[Integer] | The array of document id's to approve
+| Parameter | Type           | Description                           |
+| --------- | -------------- | ------------------------------------- |
+| documents | Array[Integer] | The array of document id's to approve |
 
 ### Response
 
-Parameter | Type | Description
---------- | ---- | -----------
-id | Integer | The id of the record
-emitter | <a href="#company" class="link">Company</a> | The document's emitter
-receiver | <a href="#company" class="link">Company</a> | The document's receiver
-currency | <a href="#currency" class="link">Currency</a> | The document's currency
-factoring_id | String | The unique supply chain finance identifier
-uuid | String | The document's unique fiscal identifier
-due_date | DateTime | The date the document will be expired or paid
-total | Float | The document's total
-discount | Float | The document's supply chain finance discount
-result | String | The document's authorization status. Check <a class="link" href="#statuses">statuses</a> below for more details.
-message | String | A message regarding the document's authorization status
+Returns a <a class="link" href="#document-authorization">Document Authorization</a>
+
+<aside class="notice">
+  You can only create one authorization at a time. Until the second authorization is finished processing, the server will throw an error.
+</aside>
 
 # Suppliers
 
@@ -505,7 +497,7 @@ message | String | A message regarding the document's authorization status
 
 ```shell
 curl "<%= config[:url] %>/v1/financial_institutions/suppliers" \
-  -H "Authorization: ${token}"
+  -H "Authorization: Bearer ${secret_key}" -H "X-API-KEY: ${api_key}"
 ```
 
 > JSON response:
@@ -513,79 +505,123 @@ curl "<%= config[:url] %>/v1/financial_institutions/suppliers" \
 ```json
 [
   {
-    "id":1,
-    "approved":true,
-    "discarded_at":null,
-    "digital_record_status":"updated",
-    "supplier":{
-        "id":2,
-        "supplier":{
-          "id":68,
-          "name":"Proveedor 1",
-          "tax_id":"RFC12345",
-          "alias":"Proveedor",
-          "factoring_id":"FAC983405"
-        },
-        "company":{
-          "id":12,
-          "name":"Comprador 1",
-          "tax_id":"RFC12345",
-          "alias":"Comprador",
-          "factoring_id":"FAC983405"
-        }
+    "id": 1,
+    "approved": true,
+    "discarded_at": null,
+    "digital_record_status": "updated",
+    "supplier": {
+      "id": 2,
+      "supplier": {
+        "id": 68,
+        "name": "Proveedor 1",
+        "tax_id": "RFC12345",
+        "alias": "Proveedor",
+        "factoring_id": "FAC983405"
+      },
+      "company": {
+        "id": 12,
+        "name": "Comprador 1",
+        "tax_id": "RFC12345",
+        "alias": "Comprador",
+        "factoring_id": "FAC983405"
+      }
     }
   },
   {
-    "id":2,
-    "approved":false,
-    "discarded_at":null,
-    "digital_record_status":"updated",
-    "supplier":{
-        "id":2,
-        "supplier":{
-          "id":68,
-          "name":"Proveedor 1",
-          "tax_id":"RFC12345",
-          "alias":"Proveedor",
-          "factoring_id":"FAC983405"
-        },
-        "company":{
-          "id":12,
-          "name":"Comprador 1",
-          "tax_id":"RFC12345",
-          "alias":"Comprador",
-          "factoring_id":"FAC983405"
-        }
+    "id": 2,
+    "approved": false,
+    "discarded_at": null,
+    "digital_record_status": "updated",
+    "supplier": {
+      "id": 2,
+      "supplier": {
+        "id": 68,
+        "name": "Proveedor 1",
+        "tax_id": "RFC12345",
+        "alias": "Proveedor",
+        "factoring_id": "FAC983405"
+      },
+      "company": {
+        "id": 12,
+        "name": "Comprador 1",
+        "tax_id": "RFC12345",
+        "alias": "Comprador",
+        "factoring_id": "FAC983405"
+      }
     }
   }
 ]
 ```
 
 ### HTTP Request
+
 <span class="tag green">GET</span>
 `<%= config[:url] %>/v1/financial_institutions/suppliers`
 
 ### Parameters
 
-Parameter | Type | Required | Default | Description
---------- | ---- | -------- | ------- | -----------
-supplier | String | `false` | `null` | The name, or part of name, or tax id to filter the suppliers for
-factoring_id | String | `false` | `null` | The factoring id of the supplier
-limit | Integer | `false` | 20 | The amount of record to pull at a time
-page | Integer | `false` | 1  | The page of the records
-status | String | `false` | `null` | The status of the supplier. Accepted values are `authorized` and `unauthorized`
-sort_field | String | `false` | `null` | The field to which sort the values by. Accepted values are `supplier`, `status`, `company`, `factoring_id`
-sort_order | String | `false` | `desc` | The order in which to order the records
+| Parameter    | Type    | Required | Default | Description                                                                                                |
+| ------------ | ------- | -------- | ------- | ---------------------------------------------------------------------------------------------------------- |
+| supplier     | String  | `false`  | `null`  | The name, or part of name, or tax id to filter the suppliers for                                           |
+| factoring_id | String  | `false`  | `null`  | The factoring id of the supplier                                                                           |
+| limit        | Integer | `false`  | 20      | The amount of record to pull at a time                                                                     |
+| page         | Integer | `false`  | 1       | The page of the records                                                                                    |
+| status       | String  | `false`  | `null`  | The status of the supplier. Accepted values are `authorized` and `unauthorized`                            |
+| sort_field   | String  | `false`  | `null`  | The field to which sort the values by. Accepted values are `supplier`, `status`, `company`, `factoring_id` |
+| sort_order   | String  | `false`  | `desc`  | The order in which to order the records                                                                    |
 
 ### Response
 
-Parameter | Type | Description
---------- | ---- | -----------
-id | Integer | The id of the record
-approved | Boolean | If the supplier has been authorized or not for supply chain financing
-discarded_at | DateTime | Flag to show if the supplier has been suspended or not
-digital_record_status | String | Supplier's digital record status. Can be one of `[pending, updated]`
-supplier | <a href="#supplier" class="link">Supplier</a> | The supply chain supplier
+| Parameter             | Type                                          | Description                                                           |
+| --------------------- | --------------------------------------------- | --------------------------------------------------------------------- |
+| id                    | Integer                                       | The id of the record                                                  |
+| approved              | Boolean                                       | If the supplier has been authorized or not for supply chain financing |
+| discarded_at          | DateTime                                      | Flag to show if the supplier has been suspended or not                |
+| digital_record_status | String                                        | Supplier's digital record status. Can be one of `[pending, updated]`  |
+| supplier              | <a href="#supplier" class="link">Supplier</a> | The supply chain supplier                                             |
+
+# Document Authorizations
+
+```shell
+curl -X POST "<%= config[:url] %>/v1/financial_institutions/documents/authorizations/${token}" \
+  -H "Authorization: Bearer ${secret_key}" -H "X-API-KEY: ${api_key}" \
+  -H "Content-Type: application/json"
+```
+
+> JSON response:
+
+```json
+{
+  "id": 1,
+  "token": "fMAcogbaWeFbY3XMhd5pw3TpAYZ3Be9-HJHCcPr0BB_zeBBQEgeaY3CdGWXmhadt",
+  "date": "2022-04-01T12:00:00",
+  "status": "done",
+  "credit_line_movements": [
+    {
+      ...
+    }
+  ]
+}
+```
+
+Gets the specified document authorization
+
+### HTTP Request
+
+<span class="tag blue">POST</span>
+`<%= config[:url] %>/v1/financial_institutions/documents/authorizations/${token}`
+
+Returns the authorization that's being processed with all the documents that were sent.
+
+### Parameters
+
+| Parameter | Type           | Description                           |
+| --------- | -------------- | ------------------------------------- |
+| documents | Array[Integer] | The array of document id's to approve |
+
+### Response
+
+Returns a <a class="link" href="#document-authorization">Document Authorization</a>
 
 # Models
 
@@ -617,19 +653,19 @@ supplier | <a href="#supplier" class="link">Supplier</a> | The supply chain supp
       "name": "Comprador 1",
       "tax_id": "RFC12345",
       "alias": "Comprador",
-      "factoring_id": "FAC983405",
-    },
-  },
+      "factoring_id": "FAC983405"
+    }
+  }
 }
 ```
 
 A Supplier model is the representation of the commercial relationship between a buyer and a supplier.
 
-Parameter | Type | Description
---------- | ---- | -----------
-id | Integer | The id of the record
-supplier | Company | The supplier
-company | Company | The buyer
+| Parameter | Type    | Description          |
+| --------- | ------- | -------------------- |
+| id        | Integer | The id of the record |
+| supplier  | Company | The supplier         |
+| company   | Company | The buyer            |
 
 ## Company
 
@@ -645,13 +681,13 @@ company | Company | The buyer
 }
 ```
 
-Parameter | Type | Description
---------- | ---- | -----------
-id | Integer | The id of the record
-name | String | The company name
-tax_id | String | The company's fiscal id (RFC)
-alias | String | The company commercial name
-factoring_id | String | A unique identifier defined by factoro
+| Parameter    | Type    | Description                            |
+| ------------ | ------- | -------------------------------------- |
+| id           | Integer | The id of the record                   |
+| name         | String  | The company name                       |
+| tax_id       | String  | The company's fiscal id (RFC)          |
+| alias        | String  | The company commercial name            |
+| factoring_id | String  | A unique identifier defined by factoro |
 
 ## Currency
 
@@ -661,15 +697,15 @@ factoring_id | String | A unique identifier defined by factoro
 {
   "id": 1,
   "code": "MXN",
-  "description": "Peso Mexicano",
+  "description": "Peso Mexicano"
 }
 ```
 
-Parameter | Type | Description
---------- | ---- | -----------
-id | Integer | The id of the record
-code | String | The 3-digit international currency representation
-description | String | The translated name of the currency
+| Parameter   | Type    | Description                                       |
+| ----------- | ------- | ------------------------------------------------- |
+| id          | Integer | The id of the record                              |
+| code        | String  | The 3-digit international currency representation |
+| description | String  | The translated name of the currency               |
 
 ## Credit Line
 
@@ -682,7 +718,7 @@ description | String | The translated name of the currency
     "name": "Company Name",
     "alias": "Alias",
     "tax_id": "Tax ID",
-    "factoring_id": "ID123",
+    "factoring_id": "ID123"
   },
   "payment_term": 1,
   "credit_limit": 1000000,
@@ -702,24 +738,55 @@ description | String | The translated name of the currency
 }
 ```
 
-Parameter | Type | Description
---------- | ---- | -----------
-id | Integer | The id of the record
-company | <a class="link" href="#company">Company</a> | The client to which the credit line is assigned
-credit_limit | Float | The credit limit for the credit line
-ordinary_interest_rate | Float | Base interest rate for the credit line
-moratorium_interest_factor | Float | The factor to multiply the interest rate to get the moratorium interest rate
-moratorium_interest_rate | Float | The calculated moratorium interest rate
-first_order_rebate | Float | The rebate for the company (Includes VAT)
-balance | Float | The spent balance on the credit line
-start_date | Float | The credit line start end
-end_date | Float | The program end date
-discarded_at | DateTime | Flag to know if the credit line is suspended or active
-min_term | Integer | The minimum accepted remaining term for a document to be requested
-max_term | Integer | The maximum accepted remaining term for a document to be requested
-min_total | Float | The minimum accepted total for a document to be requested
-max_total | Float | The maximum accepted total for a document to be requested
-token_sent_to | String | The email to where the invitation token was sent
+| Parameter                  | Type                                        | Description                                                                  |
+| -------------------------- | ------------------------------------------- | ---------------------------------------------------------------------------- |
+| id                         | Integer                                     | The id of the record                                                         |
+| company                    | <a class="link" href="#company">Company</a> | The client to which the credit line is assigned                              |
+| credit_limit               | Float                                       | The credit limit for the credit line                                         |
+| ordinary_interest_rate     | Float                                       | Base interest rate for the credit line                                       |
+| moratorium_interest_factor | Float                                       | The factor to multiply the interest rate to get the moratorium interest rate |
+| moratorium_interest_rate   | Float                                       | The calculated moratorium interest rate                                      |
+| first_order_rebate         | Float                                       | The rebate for the company (Includes VAT)                                    |
+| balance                    | Float                                       | The spent balance on the credit line                                         |
+| start_date                 | DateTime                                    | The credit line start end                                                    |
+| end_date                   | DateTime                                    | The program end date                                                         |
+| discarded_at               | DateTime                                    | Flag to know if the credit line is suspended or active                       |
+| min_term                   | Integer                                     | The minimum accepted remaining term for a document to be requested           |
+| max_term                   | Integer                                     | The maximum accepted remaining term for a document to be requested           |
+| min_total                  | Float                                       | The minimum accepted total for a document to be requested                    |
+| max_total                  | Float                                       | The maximum accepted total for a document to be requested                    |
+| token_sent_to              | String                                      | The email to where the invitation token was sent                             |
+
+## Credit Line Movement
+
+> JSON:
+
+```json
+{
+  "id": 1,
+  "date": "2022-04-01T12:00:00",
+  "total": 1234.00,
+  "folio": "AASSDDFF",
+  "status": "processed",
+  "movement_type": "discount",
+  "created_at": "2022-04-01T12:00:00",
+  "documents": [
+    {
+      ...
+    }
+  ]
+}
+```
+
+| Parameter     | Type                                          | Description                                             |
+| ------------- | --------------------------------------------- | ------------------------------------------------------- |
+| id            | Integer                                       | The id of the record                                    |
+| total         | Float                                         | The total representing this movement on the credit line |
+| folio         | String                                        | Human readable folio for the movement                   |
+| status        | String                                        | One of <code>in_process</code>, <code>processed</code>  |
+| movement_type | String                                        | One of <code>discount</code>, <code>payment</code>      |
+| created_at    | String                                        | The date the movement was created                       |
+| documents     | <a class="link" href="#document">Document</a> | The documents related to the credit line movement       |
 
 ## Contract
 
@@ -731,22 +798,87 @@ token_sent_to | String | The email to where the invitation token was sent
   "is_signed": true,
   "category": "supply_chain_finance",
   "contract_type": "incorporation",
-  "name": "Contract Name",
+  "name": "Contract Name"
 }
 ```
 
-Parameter | Type | Description
---------- | ---- | -----------
-id | Integer | The id of the record
-is_signed | Boolean | If the contract has been signed or not
-category | String | The contract category
-contract_type | String | The contract type
-name | String | The contract's file name
+| Parameter     | Type    | Description                            |
+| ------------- | ------- | -------------------------------------- |
+| id            | Integer | The id of the record                   |
+| is_signed     | Boolean | If the contract has been signed or not |
+| category      | String  | The contract category                  |
+| contract_type | String  | The contract type                      |
+| name          | String  | The contract's file name               |
+
+## Document Authorization
+
+> JSON:
+
+```json
+{
+  "id": 1,
+  "token": "fMAcogbaWeFbY3XMhd5pw3TpAYZ3Be9-HJHCcPr0BB_zeBBQEgeaY3CdGWXmhadt",
+  "date": "2022-04-01T12:00:00",
+  "status": "done",
+  "credit_line_movements": [
+    {
+      ...
+    }
+  ]
+}
+```
+
+| Parameter             | Type                                                                  | Description                                                           |
+| --------------------- | --------------------------------------------------------------------- | --------------------------------------------------------------------- |
+| id                    | Integer                                                               | The id of the record                                                  |
+| token                 | String                                                                | The unique token for retrieval                                        |
+| status                | String                                                                | One of <code>in_process</code>, <code>done</code>, <code>error</code> |
+| date                  | DateTime                                                              | The date it was created in ISO format                                 |
+| credit_line_movements | <a class="link" href="#credit-line-movement">Credit Line Movement</a> | All the credit line movements associated with the authorization       |
+
+## Document
+
+> JSON:
+
+```json
+{
+  "id": 1,
+  "emitter": {
+    "id": 456,
+    "name": "Emitter Name"
+  },
+  "receiver": {
+    "id": 789,
+    "name": "Receiver Name"
+  },
+  "currency": {
+    "id": 1,
+    "code": "MXN"
+  },
+  "factoring_id": "FAC123456",
+  "uuid": "21295371-177e-41f0-9c5c-c3c87eb71a13",
+  "due_date": "2021-09-30T11:59:59",
+  "total": 10000,
+  "discount": 100
+}
+```
+
+| Parameter    | Type                                          | Description                                   |
+| ------------ | --------------------------------------------- | --------------------------------------------- |
+| id           | Integer                                       | The id of the record                          |
+| emitter      | <a href="#company" class="link">Company</a>   | The document's emitter                        |
+| receiver     | <a href="#company" class="link">Company</a>   | The document's receiver                       |
+| currency     | <a href="#currency" class="link">Currency</a> | The document's currency                       |
+| factoring_id | String                                        | The unique supply chain finance identifier    |
+| uuid         | String                                        | The document's unique fiscal identifier       |
+| due_date     | DateTime                                      | The date the document will be expired or paid |
+| total        | Float                                         | The document's total                          |
+| discount     | Float                                         | The document's supply chain finance discount  |
 
 ## Statuses
 
-Status | Description
------- | -----------
-<span class="tag green">success</span> | The document was processed successfully
-<span class="tag gold">warning</span> | The document was processed successfully, but there is something that may seem like an error in the future
-<span class="tag red">error</span> | The document was not processed successfully
+| Status                                 | Description                                                                                               |
+| -------------------------------------- | --------------------------------------------------------------------------------------------------------- |
+| <span class="tag green">success</span> | The document was processed successfully                                                                   |
+| <span class="tag gold">warning</span>  | The document was processed successfully, but there is something that may seem like an error in the future |
+| <span class="tag red">error</span>     | The document was not processed successfully                                                               |
