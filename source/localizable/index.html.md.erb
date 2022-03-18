@@ -583,7 +583,7 @@ curl "<%= config[:url] %>/v1/financial_institutions/suppliers" \
 # Document Authorizations
 
 ```shell
-curl -X POST "<%= config[:url] %>/v1/financial_institutions/documents/authorizations/${token}" \
+curl -X GET "<%= config[:url] %>/v1/financial_institutions/documents/authorizations/${token}" \
   -H "Authorization: Bearer ${secret_key}" -H "X-API-KEY: ${api_key}" \
   -H "Content-Type: application/json"
 ```
@@ -608,16 +608,16 @@ Gets the specified document authorization
 
 ### HTTP Request
 
-<span class="tag blue">POST</span>
+<span class="tag blue">GET</span>
 `<%= config[:url] %>/v1/financial_institutions/documents/authorizations/${token}`
 
 Returns the authorization that's being processed with all the documents that were sent.
 
 ### Parameters
 
-| Parameter | Type           | Description                           |
-| --------- | -------------- | ------------------------------------- |
-| documents | Array[Integer] | The array of document id's to approve |
+| Parameter | Type   | Description                    |
+| --------- | ------ | ------------------------------ |
+| token     | String | the token of the authorization |
 
 ### Response
 
