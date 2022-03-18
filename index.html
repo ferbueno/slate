@@ -1148,7 +1148,7 @@ Those documents should be in the <code>requested</code> status.</p>
 <td>The supply chain supplier</td>
 </tr>
 </tbody></table>
-<h1 id='document-authorizations'>Document Authorizations</h1><div class="highlight"><pre class="highlight shell tab-shell"><code>curl <span class="nt">-X</span> POST <span class="s2">"https://api.factoro.mx/v1/financial_institutions/documents/authorizations/</span><span class="k">${</span><span class="nv">token</span><span class="k">}</span><span class="s2">"</span> <span class="se">\</span>
+<h1 id='document-authorizations'>Document Authorizations</h1><div class="highlight"><pre class="highlight shell tab-shell"><code>curl <span class="nt">-X</span> GET <span class="s2">"https://api.factoro.mx/v1/financial_institutions/documents/authorizations/</span><span class="k">${</span><span class="nv">token</span><span class="k">}</span><span class="s2">"</span> <span class="se">\</span>
   <span class="nt">-H</span> <span class="s2">"Authorization: Bearer </span><span class="k">${</span><span class="nv">secret_key</span><span class="k">}</span><span class="s2">"</span> <span class="nt">-H</span> <span class="s2">"X-API-KEY: </span><span class="k">${</span><span class="nv">api_key</span><span class="k">}</span><span class="s2">"</span> <span class="se">\</span>
   <span class="nt">-H</span> <span class="s2">"Content-Type: application/json"</span>
 </code></pre></div>
@@ -1169,7 +1169,7 @@ Those documents should be in the <code>requested</code> status.</p>
 </span></code></pre></div>
 <p>Gets the specified document authorization</p>
 <h3 id='http-request-10'>HTTP Request</h3>
-<p><span class="tag blue">POST</span>
+<p><span class="tag blue">GET</span>
 <code>https://api.factoro.mx/v1/financial_institutions/documents/authorizations/${token}</code></p>
 
 <p>Returns the authorization that&#39;s being processed with all the documents that were sent.</p>
@@ -1182,9 +1182,9 @@ Those documents should be in the <code>requested</code> status.</p>
 </tr>
 </thead><tbody>
 <tr>
-<td>documents</td>
-<td>Array[Integer]</td>
-<td>The array of document id&#39;s to approve</td>
+<td>token</td>
+<td>String</td>
+<td>the token of the authorization</td>
 </tr>
 </tbody></table>
 <h3 id='response-8'>Response</h3>
